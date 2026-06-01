@@ -1,0 +1,59 @@
+import { body } from 'express-validator';
+
+/*Middleware "titleValidation" проверяет, что поле "title":
+1. Является строкой.
+2. Состоит из не менее 1 и не более 30 символов.*/
+export const titleValidation = body('title')
+  .isString()
+  .withMessage('title must be a string')
+  .trim()
+  .isLength({ min: 1, max: 30 });
+
+/*Middleware "shortDescriptionValidation" проверяет, что поле "shortDescription":
+1. Является строкой.
+2. Состоит из не менее 1 и не более 100 символов.*/
+export const shortDescriptionValidation = body('shortDescription')
+  .isString()
+  .withMessage('shortDescription must be a string')
+  .trim()
+  .isLength({ min: 1, max: 100 });
+
+/*Middleware "contentValidation" проверяет, что поле "content":
+1. Является строкой.
+2. Состоит из не менее 1 и не более 1000 символов.*/
+export const contentValidation = body('content')
+  .isString()
+  .withMessage('content must be a string')
+  .trim()
+  .isLength({ min: 1, max: 1000 });
+
+/*Middleware "blogIdValidation" проверяет, что поле "blogId":
+1. Является строкой.
+2. Состоит из не менее 1 символа.*/
+export const blogIdValidation = body('blogId')
+  .isString()
+  .withMessage('blogId must be a string')
+  .trim()
+  .isLength({ min: 1 });
+
+/*Комбинируем вышеуказанные middlewares в один middleware "postCreateInputValidation", чтобы использовать его для
+проверки запросов по созданию поста.*/
+export const postCreateInputValidation = [
+  titleValidation,
+  shortDescriptionValidation,
+  contentValidation,
+  blogIdValidation,
+];
+
+/*Комбинируем вышеуказанные middlewares в один middleware "postUpdateInputValidation", чтобы использовать его для
+проверки запросов по изменению поста.*/
+export const postUpdateInputValidation = [
+  titleValidation,
+  shortDescriptionValidation,
+  contentValidation,
+  blogIdValidation,
+];
+
+/*Комбинируем вышеуказанные middlewares в один middleware "postInBlogCreateInputValidation", чтобы использовать его для
+проверки запросов по созданию поста в блоге.*/
+export const postInBlogCreateInputValidation = [titleValidation, shortDescriptionValidation, contentValidation];
