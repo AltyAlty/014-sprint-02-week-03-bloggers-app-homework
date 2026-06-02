@@ -1,4 +1,4 @@
-import { UserType } from '../types/user.type';
+import { EmailConfirmationType, UserType } from '../types/user.type';
 import { usersRepository } from '../repositories/users.repository';
 import { CreateUserInputDTO } from '../routes/input-dto/create-user.input-dto';
 import { argon2Adapter } from '../../auth/adapters/argon2.adapter';
@@ -12,7 +12,10 @@ import { commentsService } from '../../comments/application/comments.service';
 /*Сервис "usersService" для работы с пользователями.*/
 export const usersService = {
   /*Метод "create()" для добавления пользователя.*/
-  async create(dto: CreateUserInputDTO): Promise<Result<{ userId: string }>> {
+  async create(
+    dto: CreateUserInputDTO,
+    emailConfirmation?: EmailConfirmationType
+  ): Promise<Result<{ userId: string }>> {
     /*Создаем переменные на основе параметра "dto" при помощи деструктуризации.*/
     const { login, password, email }: { login: string; password: string; email: string } = dto;
     /*Просим адаптер "argon2Adapter" сгенерировать хэш для пароля.*/
@@ -24,6 +27,11 @@ export const usersService = {
       email,
       passwordHash,
       createdAt: new Date(),
+      emailConfirmation: {
+        isConfirmed: emailConfirmation?.isConfirmed ?? true,
+        confirmationCode: emailConfirmation?.confirmationCode ?? '',
+        expirationDate: emailConfirmation?.expirationDate ?? new Date(),
+      },
     };
 
     /*Просим репозиторий "usersRepository" создать нового пользователя в БД.*/
@@ -33,6 +41,32 @@ export const usersService = {
     return {
       status: ResultStatuses.Created,
       data: { userId },
+      extensions: [],
+    };
+  },
+
+  /*Метод "findById()" для поиска пользователя по ID.*/
+  async findById(userId: string): Promise<Result<{ userOutput: UserOutputDTO } | null>> {
+    /*Просим репозиторий "usersRepository" найти пользователя по ID в БД.*/
+    const userDB: WithId<UserType> | null = await usersRepository.findById(userId);
+
+    /*Если пользователь не был найден, то возвращаем ResultObject с информацией об этом.*/
+    if (!userDB) {
+      return {
+        status: ResultStatuses.NotFound,
+        data: null,
+        errorMessage: 'Not Found',
+        extensions: [{ field: 'userId', message: 'Not Found' }],
+      };
+    }
+
+    /*Если пользователь был найден, то преобразовываем пользователя из БД в подготовленного для отправки пользователя.*/
+    const userOutput: UserOutputDTO = mapToUserOutputDTO(userDB);
+
+    /*Возвращаем ResultObject c преобразованным пользователем.*/
+    return {
+      status: ResultStatuses.Ok,
+      data: { userOutput },
       extensions: [],
     };
   },
@@ -65,28 +99,53 @@ export const usersService = {
     };
   },
 
-  /*Метод "findById()" для поиска пользователя по ID.*/
-  async findById(userId: string): Promise<Result<{ userOutput: UserOutputDTO } | null>> {
-    /*Просим репозиторий "usersRepository" найти пользователя по ID в БД.*/
-    const userDB: WithId<UserType> | null = await usersRepository.findById(userId);
+  /*Метод "confirmByCode()" для подтверждения регистрации пользователя по коду.*/
+  async confirmByCode(code: string): Promise<Result<{} | null>> {
+    /*Просим репозиторий "usersRepository" подтвердить регистрацию пользователя по коду в БД.*/
+    const confirmedUserCount: number = await usersRepository.confirmByCode(code);
 
-    /*Если пользователь не был найден, то возвращаем ResultObject с информацией об этом.*/
-    if (!userDB) {
+    /*Если пользователь не был подтвержден, то возвращаем ResultObject с информацией об этом.*/
+    if (confirmedUserCount < 1) {
       return {
         status: ResultStatuses.NotFound,
         data: null,
-        errorMessage: 'Not Found',
-        extensions: [{ field: 'userId', message: 'Not Found' }],
+        errorMessage: 'Bad Request',
+        extensions: [{ field: 'code', message: 'Not Found' }],
       };
     }
 
-    /*Если пользователь был найден, то преобразовываем пользователя из БД в подготовленного для отправки пользователя.*/
-    const userOutput: UserOutputDTO = mapToUserOutputDTO(userDB);
-
-    /*Возвращаем ResultObject c преобразованным пользователем.*/
+    /*Если пользователь был подтвержден, то возвращаем ResultObject c информацией об этом.*/
     return {
-      status: ResultStatuses.Ok,
-      data: { userOutput },
+      status: ResultStatuses.NoContent,
+      data: {},
+      extensions: [],
+    };
+  },
+
+  /*Метод "updateEmailConfirmationByEmail()" для изменения данных для подтверждения регистрации пользователя по email.*/
+  async updateEmailConfirmationByEmail(
+    email: string,
+    emailConfirmation: EmailConfirmationType
+  ): Promise<Result<{} | null>> {
+    /*Просим репозиторий "usersRepository" изменить данные для подтверждения регистрации пользователя по email в БД.*/
+    const updatedUserCount: number = await usersRepository.updateEmailConfirmationByEmail(email, emailConfirmation);
+
+    /*Если данные для подтверждения регистрации пользователя не были изменены, то возвращаем ResultObject с информацией
+    об этом.*/
+    if (updatedUserCount < 1) {
+      return {
+        status: ResultStatuses.NotFound,
+        data: null,
+        errorMessage: 'Bad Request',
+        extensions: [{ field: 'email', message: 'Not Found' }],
+      };
+    }
+
+    /*Если данные для подтверждения регистрации пользователя были изменены, то возвращаем ResultObject с информацией об
+    этом.*/
+    return {
+      status: ResultStatuses.NoContent,
+      data: {},
       extensions: [],
     };
   },
@@ -108,7 +167,7 @@ export const usersService = {
       };
     }
 
-    /*Если пользователь был удален, то возвращаем ResultObject c информацией об удалении пользователя.*/
+    /*Если пользователь был удален, то возвращаем ResultObject c информацией об этом.*/
     return {
       status: ResultStatuses.NoContent,
       data: {},

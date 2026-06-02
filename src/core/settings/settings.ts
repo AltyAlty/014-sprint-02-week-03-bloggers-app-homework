@@ -30,4 +30,9 @@ export const SETTINGS = {
   AC_SECRET: process.env.AC_SECRET,
   AC_TIME: process.env.AC_TIME,
   RT_SECRET: process.env.RT_SECRET,
+
+  EMAIL: process.env.EMAIL,
+  EMAIL_PASS: process.env.EMAIL_PASS,
+  EMAIL_APP_PASS: process.env.EMAIL_APP_PASS,
+  DEFAULT_CODE_EXPIRATION_TIME: { minutes: 30 },
 };

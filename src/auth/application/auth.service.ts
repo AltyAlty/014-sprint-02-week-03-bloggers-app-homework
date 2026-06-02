@@ -4,6 +4,13 @@ import { Result } from '../../core/types/result/result.type';
 import { jwtAdapter } from '../adapters/jwt.adapter';
 import { usersService } from '../../users/application/users.service';
 import { UserOutputDTO } from '../../users/routes/output-dto/user.output-dto';
+import { CreateUserInputDTO } from '../../users/routes/input-dto/create-user.input-dto';
+import { nodemailerAdapter } from '../adapters/nodemailer.adapter';
+import { randomUUID } from 'crypto';
+import { emailExamples } from '../email/email-examples';
+import { EmailConfirmationType } from '../../users/types/user.type';
+import { add } from 'date-fns/add';
+import { SETTINGS } from '../../core/settings/settings';
 
 /*Сервис "authService" для работы с аутентификацией.*/
 export const authService = {
@@ -69,6 +76,90 @@ export const authService = {
     return {
       status: ResultStatuses.Ok,
       data: { id: userResult.data!.userOutputWithPasswordHash.id },
+      extensions: [],
+    };
+  },
+
+  /*Метод "registerUser()" для регистрации пользователя.*/
+  async registerUser(dto: CreateUserInputDTO): Promise<Result<{ createdUserId: string }>> {
+    /*Создаем объект с данными о подтверждении email.*/
+    const newUserEmailConfirmationData: EmailConfirmationType = {
+      isConfirmed: false,
+      confirmationCode: randomUUID(),
+      expirationDate: add(new Date(), SETTINGS.DEFAULT_CODE_EXPIRATION_TIME),
+    };
+
+    /*Просим сервис "usersService" создать пользователя.*/
+    const createUserResult: Result<{ userId: string }> = await usersService.create(dto, newUserEmailConfirmationData);
+    /*Получаем ID созданного пользователя.*/
+    const createdUserId: string = createUserResult.data.userId;
+
+    /*Просим адаптер "nodemailerAdapter" отправить письмо о подтверждении почты пользователю.*/
+    await nodemailerAdapter
+      .sendMail(
+        dto.email,
+        'Complete Registration',
+        newUserEmailConfirmationData.confirmationCode,
+        emailExamples.completeRegistrationEmail
+      )
+      .catch(error => console.error('Failed to send a confirmation email: ', error));
+
+    /*Если письмо было успешно отправлено, то возвращаем ResultObject с ID зарегистрированного пользователя.*/
+    return {
+      status: ResultStatuses.Created,
+      data: { createdUserId },
+      extensions: [],
+    };
+  },
+
+  /*Метод "resendConfirmationEmail()" для повторной отправки письма для подтверждения регистрация пользователя.*/
+  async resendConfirmationEmail(email: string): Promise<Result<{} | null>> {
+    /*Создаем объект с данными о подтверждении email.*/
+    const newUserEmailConfirmationData: EmailConfirmationType = {
+      isConfirmed: false,
+      confirmationCode: randomUUID(),
+      expirationDate: add(new Date(), SETTINGS.DEFAULT_CODE_EXPIRATION_TIME),
+    };
+
+    /*Просим сервис "usersService" изменить данные для подтверждения регистрации пользователя по email.*/
+    const updateUserResult: Result<{} | null> = await usersService.updateEmailConfirmationByEmail(
+      email,
+      newUserEmailConfirmationData
+    );
+
+    /*Если данные для подтверждения регистрации пользователя не были изменены, то возвращаем ResultObject с информацией
+    об этом.*/
+    if (!updateUserResult.data) return updateUserResult;
+
+    /*Просим адаптер "nodemailerAdapter" повторно отправить письмо о подтверждении почты пользователю.*/
+    await nodemailerAdapter
+      .sendMail(
+        email,
+        'Complete Registration',
+        newUserEmailConfirmationData.confirmationCode,
+        emailExamples.completeRegistrationEmail
+      )
+      .catch(error => console.error('Failed to resend a confirmation email: ', error));
+
+    /*Если письмо было успешно отправлено, то возвращаем ResultObject с информацией об этом.*/
+    return {
+      status: ResultStatuses.NoContent,
+      data: {},
+      extensions: [],
+    };
+  },
+
+  /*Метод "confirmEmail()" для подтверждения регистрации пользователя.*/
+  async confirmUserByCode(code: string): Promise<Result<{} | null>> {
+    /*Просим сервис "usersService" подтвердить регистрацию пользователя по коду.*/
+    const confirmResult: Result<{} | null> = await usersService.confirmByCode(code);
+    /*Если подтвердить регистрацию пользователя не удалось, то возвращаем ResultObject с информацией об этом.*/
+    if (confirmResult.status !== ResultStatuses.NoContent) return confirmResult;
+
+    /*Если подтвердить регистрацию пользователя удалось, то возвращаем ResultObject с информацией об этом.*/
+    return {
+      status: ResultStatuses.NoContent,
+      data: {},
       extensions: [],
     };
   },

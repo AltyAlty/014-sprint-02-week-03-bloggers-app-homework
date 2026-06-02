@@ -1,4 +1,4 @@
-/*Тип для поля "CommentatorInfoType" в типе "CommentType".*/
+/*Тип для поля "commentatorInfo" в типе "CommentType".*/
 export type CommentatorInfoType = {
   userId: string;
   userLogin: string;

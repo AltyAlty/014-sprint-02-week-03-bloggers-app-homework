@@ -1,6 +1,6 @@
-import { DeleteResult, InsertOneResult, ObjectId, WithId } from 'mongodb';
+import { DeleteResult, InsertOneResult, ObjectId, UpdateResult, WithId } from 'mongodb';
 import { usersCollection } from '../../db/mongodb/mongo.db';
-import { UserType } from '../types/user.type';
+import { EmailConfirmationType, UserType } from '../types/user.type';
 
 /*Репозиторий "usersRepository" для работы с пользователями в БД.*/
 export const usersRepository = {
@@ -10,6 +10,26 @@ export const usersRepository = {
     const insertResult: InsertOneResult<UserType> = await usersCollection.insertOne(newUser);
     /*Возвращаем ID созданного пользователя.*/
     return insertResult.insertedId.toString();
+  },
+
+  /*Метод "findById()" для поиска пользователя по ID в БД.*/
+  async findById(userId: string): Promise<WithId<UserType> | null> {
+    /*Просим коллекцию "usersCollection" найти пользователя по ID в БД.*/
+    const user: WithId<UserType> | null = await usersCollection.findOne({ _id: new ObjectId(userId) });
+    /*Если пользователь не был найден, то возвращаем null.*/
+    if (!user) return null;
+    /*Если пользователь был найден, то возвращаем его.*/
+    return user;
+  },
+
+  /*Метод "findByEmail()" для поиска пользователя по email в БД.*/
+  async findByEmail(email: string): Promise<WithId<UserType> | null> {
+    /*Просим коллекцию "usersCollection" найти пользователя по email в БД.*/
+    const user: WithId<UserType> | null = await usersCollection.findOne({ email });
+    /*Если пользователь не был найден, то возвращаем null.*/
+    if (!user) return null;
+    /*Если пользователь был найден, то возвращаем его.*/
+    return user;
   },
 
   /*Метод "findByLoginOrEmail()" для поиска пользователя по логину/email в БД.*/
@@ -25,14 +45,35 @@ export const usersRepository = {
     return user;
   },
 
-  /*Метод "findById()" для поиска пользователя по ID в БД.*/
-  async findById(userId: string): Promise<WithId<UserType> | null> {
-    /*Просим коллекцию "usersCollection" найти пользователя по ID в БД.*/
-    const user: WithId<UserType> | null = await usersCollection.findOne({ _id: new ObjectId(userId) });
+  /*Метод "findByConfirmationCode()" для поиска пользователя по коду подтверждения в БД.*/
+  async findByConfirmationCode(code: string): Promise<WithId<UserType> | null> {
+    /*Просим коллекцию "usersCollection" найти пользователя по коду подтверждения в БД.*/
+    const user: WithId<UserType> | null = await usersCollection.findOne({ 'emailConfirmation.confirmationCode': code });
     /*Если пользователь не был найден, то возвращаем null.*/
     if (!user) return null;
     /*Если пользователь был найден, то возвращаем его.*/
     return user;
+  },
+
+  /*Метод "confirmByCode()" для подтверждения регистрации пользователя по коду в БД.*/
+  async confirmByCode(code: string): Promise<number> {
+    /*Просим коллекцию "usersCollection" подтвердить регистрацию пользователя по коду в БД.*/
+    const updateResult: UpdateResult = await usersCollection.updateOne(
+      { 'emailConfirmation.confirmationCode': code },
+      { $set: { 'emailConfirmation.isConfirmed': true } }
+    );
+
+    /*Возвращаем количество измененных пользователей.*/
+    return updateResult.modifiedCount;
+  },
+
+  /*Метод "updateEmailConfirmationByEmail()" для изменения данных для подтверждения регистрации пользователя по email в
+  БД.*/
+  async updateEmailConfirmationByEmail(email: string, emailConfirmation: EmailConfirmationType): Promise<number> {
+    /*Просим коллекцию "usersCollection" изменить данные для подтверждения регистрации пользователя по email в БД.*/
+    const updateResult: UpdateResult = await usersCollection.updateOne({ email }, { $set: { emailConfirmation } });
+    /*Возвращаем количество измененных пользователей.*/
+    return updateResult.modifiedCount;
   },
 
   /*Метод "deleteById()" для удаления пользователя по ID в БД.*/

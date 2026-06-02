@@ -1,5 +1,7 @@
 import { body } from 'express-validator';
 import { usersRepository } from '../repositories/users.repository';
+import { WithId } from 'mongodb';
+import { UserType } from '../types/user.type';
 
 /*Middleware "loginValidation" проверяет, что поле "login":
 1. Является строкой.
@@ -17,7 +19,7 @@ const loginValidation = body('login')
   .custom(async (login: string) => {
     /*Просим репозиторий "usersRepository" найти пользователя по логину в БД. Если пользователь будет найден, то это
     означает, что логин не уникальный. В таком случае выкидываем ошибку с информацией об этом.*/
-    const user = await usersRepository.findByLoginOrEmail(login);
+    const user: WithId<UserType> | null = await usersRepository.findByLoginOrEmail(login);
     if (user) throw new Error('login must be unique');
     return true;
   });
@@ -34,7 +36,8 @@ const passwordValidation = body('password')
 
 /*Middleware "emailValidation" проверяет, что поле "email":
 1. Является строкой.
-2. Соответствует формату электронной почты.*/
+2. Соответствует формату электронной почты.
+3. Является уникальной в БД.*/
 const emailValidation = body('email')
   .isString()
   .withMessage('email must be a string')
@@ -46,7 +49,7 @@ const emailValidation = body('email')
   .custom(async (email: string) => {
     /*Просим репозиторий "usersRepository" найти пользователя по email в БД. Если пользователь будет найден, то это
     означает, что email не уникальный. В таком случае выкидываем ошибку с информацией об этом.*/
-    const user = await usersRepository.findByLoginOrEmail(email);
+    const user: WithId<UserType> | null = await usersRepository.findByLoginOrEmail(email);
     if (user) throw new Error('email must be unique');
     return true;
   });
