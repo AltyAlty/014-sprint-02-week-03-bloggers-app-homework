@@ -4,10 +4,10 @@ import { CreateUserInputDTO } from '../routes/input-dto/create-user.input-dto';
 import { argon2Adapter } from '../../auth/adapters/argon2.adapter';
 import { ResultStatuses } from '../../core/types/result/result-statuses';
 import { Result } from '../../core/types/result/result.type';
-import { WithId } from 'mongodb';
 import { UserOutputDTO } from '../routes/output-dto/user.output-dto';
 import { mapToUserOutputDTO } from '../repositories/mappers/map-to-user-output-dto.util';
 import { commentsService } from '../../comments/application/comments.service';
+import { UserDBType } from '../../db/types/user-db.type';
 
 /*Сервис "usersService" для работы с пользователями.*/
 export const usersService = {
@@ -48,7 +48,7 @@ export const usersService = {
   /*Метод "findById()" для поиска пользователя по ID.*/
   async findById(userId: string): Promise<Result<{ userOutput: UserOutputDTO } | null>> {
     /*Просим репозиторий "usersRepository" найти пользователя по ID в БД.*/
-    const userDB: WithId<UserType> | null = await usersRepository.findById(userId);
+    const userDB: UserDBType | null = await usersRepository.findById(userId);
 
     /*Если пользователь не был найден, то возвращаем ResultObject с информацией об этом.*/
     if (!userDB) {
@@ -76,7 +76,7 @@ export const usersService = {
     loginOrEmail: string
   ): Promise<Result<{ userOutputWithPasswordHash: UserOutputDTO & { passwordHash: string } } | null>> {
     /*Просим репозиторий "usersRepository" найти пользователя по логину/email в БД.*/
-    const userDB: WithId<UserType> | null = await usersRepository.findByLoginOrEmail(loginOrEmail);
+    const userDB: UserDBType | null = await usersRepository.findByLoginOrEmail(loginOrEmail);
 
     /*Если пользователь не был найден, то возвращаем ResultObject с информацией об этом.*/
     if (!userDB) {
@@ -109,7 +109,7 @@ export const usersService = {
       return {
         status: ResultStatuses.NotFound,
         data: null,
-        errorMessage: 'Bad Request',
+        errorMessage: 'Not Found',
         extensions: [{ field: 'code', message: 'Not Found' }],
       };
     }
@@ -136,7 +136,7 @@ export const usersService = {
       return {
         status: ResultStatuses.NotFound,
         data: null,
-        errorMessage: 'Bad Request',
+        errorMessage: 'Not Found',
         extensions: [{ field: 'email', message: 'Not Found' }],
       };
     }

@@ -1,16 +1,17 @@
-import { Filter, ObjectId, WithId } from 'mongodb';
+import { Filter, ObjectId } from 'mongodb';
 import { PostType } from '../types/post.type';
 import { postsCollection } from '../../db/mongodb/mongo.db';
 import { GetPostsListQueryInputDTO } from '../routes/input-dto/get-posts-list-query.input-dto';
 import { SortDirection } from '../../core/types/pagination/sort-direction';
 import { PostSortFieldInputDTO } from '../routes/input-dto/post-sort-field.input-dto';
+import { PostDBType } from '../../db/types/post-db.type';
 
 /*Query-репозиторий "postsQueryRepository" для работы с постами в БД.*/
 export const postsQueryRepository = {
   /*Метод "findById()" для поиска поста по ID в БД.*/
-  async findById(postId: string): Promise<WithId<PostType> | null> {
+  async findById(postId: string): Promise<PostDBType | null> {
     /*Просим коллекцию "postsCollection" найти пост по ID в БД.*/
-    const result: WithId<PostType> | null = await postsCollection.findOne({ _id: new ObjectId(postId) });
+    const result: PostDBType | null = await postsCollection.findOne({ _id: new ObjectId(postId) });
     /*Если пост не был найден, то возвращаем null.*/
     if (!result) return null;
     /*Если пост был найден, то возвращаем его.*/
@@ -21,7 +22,7 @@ export const postsQueryRepository = {
   async findMany(
     queryDTO: GetPostsListQueryInputDTO,
     blogId?: string
-  ): Promise<{ items: WithId<PostType>[]; totalCount: number }> {
+  ): Promise<{ items: PostDBType[]; totalCount: number }> {
     /*Создаем переменные на основе параметра "queryDTO" при помощи деструктуризации.*/
     const {
       pageNumber,
@@ -45,7 +46,7 @@ export const postsQueryRepository = {
 
     /*Просим коллекцию "postsCollection" найти посты в БД и подсчитать общее количество документов, подходящих под
     фильтр, без учета пагинации.*/
-    const [items, totalCount]: [WithId<PostType>[], number] = await Promise.all([
+    const [items, totalCount]: [PostDBType[], number] = await Promise.all([
       postsCollection
         .find(filter)
         .sort({ [sortBy]: sortDirection })

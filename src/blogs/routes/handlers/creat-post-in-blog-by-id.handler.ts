@@ -8,9 +8,9 @@ import { HttpStatuses } from '../../../core/types/http-statuses';
 import { ExtensionType, Result } from '../../../core/types/result/result.type';
 import { PostOutputDTO } from '../../../posts/routes/output-dto/post.output-dto';
 
-/*Функция-обработчик "createPostInBlogByIdHandler()" для POST-запросов по добавлению поста в блог по ID, используя
+/*Функция-обработчик "createPostInBlogHandler()" для POST-запросов по добавлению поста в блог по ID, используя
 URI-параметры.*/
-export const createPostInBlogByIdHandler = async (
+export const createPostInBlogHandler = async (
   req: Request<{ blogId: string }, {}, CreatePostInBlogInputDTO>,
   res: Response<PostOutputDTO | ExtensionType[]>
 ) => {

@@ -14,7 +14,8 @@ import { CommentSortFieldInputDTO } from '../../comments/routes/input-dto/commen
 import { getCommentsListByPostIdHandler } from './handlers/get-comments-list-by-post-id.handler';
 import { accessTokenGuardMiddleware } from '../../auth/middlewares/guard-middlewares/access-token.guard-middleware';
 import { commentInPostCreateInputValidation } from '../../comments/validation/comment-input-validation.middlewares';
-import { createCommentInPostByIdHandler } from './handlers/creat-comment-in-post-by-id.handler';
+import { createCommentInPostHandler } from './handlers/creat-comment-in-post-by-id.handler';
+import { SETTINGS } from '../../core/settings/settings';
 
 /*Роутер из Express для работы с данными по постам.*/
 export const postsRouter: Router = Router({});
@@ -23,7 +24,7 @@ export const postsRouter: Router = Router({});
 postsRouter
   /*001. GET-запрос по получению комментариев с пагинацией в посте по ID, используя URI-параметры.*/
   .get(
-    '/:postId/comments',
+    SETTINGS.GET_COMMENTS_LIST_BY_POST_ID_PATH,
     postIdValidation,
     paginationValidationMiddleware(CommentSortFieldInputDTO),
     inputValidationResultMiddleware,
@@ -31,22 +32,33 @@ postsRouter
   )
   /*002. POST-запрос по добавлению комментария в пост по ID, используя URI-параметры.*/
   .post(
-    '/:postId/comments',
+    SETTINGS.CREATE_COMMENT_IN_POST_PATH,
     accessTokenGuardMiddleware,
     postIdValidation,
     commentInPostCreateInputValidation,
     inputValidationResultMiddleware,
-    createCommentInPostByIdHandler
+    createCommentInPostHandler
   )
   /*003. GET-запрос по получению постов с пагинацией, используя query-параметры.*/
-  .get('', paginationValidationMiddleware(PostSortFieldInputDTO), inputValidationResultMiddleware, getPostsListHandler)
+  .get(
+    SETTINGS.GET_POSTS_LIST_PATH,
+    paginationValidationMiddleware(PostSortFieldInputDTO),
+    inputValidationResultMiddleware,
+    getPostsListHandler
+  )
   /*004. POST-запрос по добавлению поста.*/
-  .post('', basicAuthGuardMiddleware, postCreateInputValidation, inputValidationResultMiddleware, createPostHandler)
+  .post(
+    SETTINGS.CREATE_POST_PATH,
+    basicAuthGuardMiddleware,
+    postCreateInputValidation,
+    inputValidationResultMiddleware,
+    createPostHandler
+  )
   /*005. GET-запрос по получению поста по ID, используя URI-параметры.*/
-  .get('/:id', idValidation, inputValidationResultMiddleware, getPostByIdHandler)
+  .get(SETTINGS.GET_POST_BY_ID_PATH, idValidation, inputValidationResultMiddleware, getPostByIdHandler)
   /*006. PUT-запрос по изменению поста по ID, используя URI-параметры.*/
   .put(
-    '/:id',
+    SETTINGS.UPDATE_POST_BY_ID_PATH,
     basicAuthGuardMiddleware,
     idValidation,
     postUpdateInputValidation,
@@ -54,4 +66,10 @@ postsRouter
     updatePostByIdHandler
   )
   /*007. DELETE-запрос по удалению поста по ID, используя URI-параметры.*/
-  .delete('/:id', basicAuthGuardMiddleware, idValidation, inputValidationResultMiddleware, deletePostByIdHandler);
+  .delete(
+    SETTINGS.DELETE_POST_BY_ID_PATH,
+    basicAuthGuardMiddleware,
+    idValidation,
+    inputValidationResultMiddleware,
+    deletePostByIdHandler
+  );

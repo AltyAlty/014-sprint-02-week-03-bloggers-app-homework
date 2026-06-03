@@ -6,17 +6,16 @@ import { mapToPostOutputDTO } from '../repositories/mappers/map-to-post-output-d
 import { PostOutputDTO } from '../routes/output-dto/post.output-dto';
 import { ResultStatuses } from '../../core/types/result/result-statuses';
 import { Result } from '../../core/types/result/result.type';
-import { WithId } from 'mongodb';
-import { PostType } from '../types/post.type';
 import { blogsQueryService } from '../../blogs/application/blogs.query-service';
 import { BlogOutputDTO } from '../../blogs/routes/output-dto/blog.output-dto';
+import { PostDBType } from '../../db/types/post-db.type';
 
 /*Query-сервис "postsQueryService" для работы с постами.*/
 export const postsQueryService = {
   /*Метод "findById()" для поиска поста по ID.*/
   async findById(postId: string): Promise<Result<{ postOutput: PostOutputDTO } | null>> {
     /*Просим query-репозиторий "postsQueryRepository" найти пост по ID в БД.*/
-    const postDB: WithId<PostType> | null = await postsQueryRepository.findById(postId);
+    const postDB: PostDBType | null = await postsQueryRepository.findById(postId);
 
     /*Если пост не был найден, то возвращаем ResultObject с информацией об этом.*/
     if (!postDB) {
@@ -48,21 +47,15 @@ export const postsQueryService = {
     if (blogId) {
       /*Просим query-сервис "blogsQueryService" найти блог по ID.*/
       const blogResult: Result<{ blogOutput: BlogOutputDTO } | null> = await blogsQueryService.findById(blogId);
-
       /*Если блог не был найден, то возвращаем ResultObject с информацией об этом.*/
-      if (!blogResult.data) {
-        return {
-          status: ResultStatuses.NotFound,
-          data: null,
-          errorMessage: 'Not Found',
-          extensions: [{ field: 'blogId', message: 'Not Found' }],
-        };
-      }
+      if (blogResult.status !== ResultStatuses.Ok) return blogResult as Result;
     }
 
     /*Если блог существует, то просим query-репозиторий "postsQueryRepository" найти посты в блоге по ID в БД.*/
-    const { items, totalCount }: { items: WithId<PostType>[]; totalCount: number } =
-      await postsQueryRepository.findMany(queryDTO, blogId);
+    const { items, totalCount }: { items: PostDBType[]; totalCount: number } = await postsQueryRepository.findMany(
+      queryDTO,
+      blogId
+    );
 
     /*Преобразовываем посты из БД в подготовленные для пагинации посты.*/
     const paginatedPostsListOutput: PaginatedPostsListOutputDTO = mapToPaginatedPostsListOutputDTO(items, {

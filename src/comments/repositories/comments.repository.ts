@@ -1,7 +1,8 @@
 import { UpdateCommentInputDTO } from '../routes/input-dto/update-comment.input-dto';
 import { commentsCollection } from '../../db/mongodb/mongo.db';
-import { DeleteResult, InsertOneResult, ObjectId, UpdateResult, WithId } from 'mongodb';
+import { DeleteResult, InsertOneResult, ObjectId, UpdateResult } from 'mongodb';
 import { CommentType } from '../types/comment.type';
+import { CommentDBType } from '../../db/types/comment-db.type';
 
 /*Репозиторий "commentsRepository" для работы с комментариями в БД.*/
 export const commentsRepository = {
@@ -14,9 +15,9 @@ export const commentsRepository = {
   },
 
   /*Метод "findById()" для поиска комментария по ID в БД.*/
-  async findById(commentId: string): Promise<WithId<CommentType> | null> {
+  async findById(commentId: string): Promise<CommentDBType | null> {
     /*Просим коллекцию "commentsCollection" найти комментарий по ID в БД.*/
-    const comment: WithId<CommentType> | null = await commentsCollection.findOne({ _id: new ObjectId(commentId) });
+    const comment: CommentDBType | null = await commentsCollection.findOne({ _id: new ObjectId(commentId) });
     /*Если комментарий не был найден, то возвращаем null.*/
     if (!comment) return null;
     /*Если комментарий был найден, то возвращаем его.*/
@@ -24,9 +25,9 @@ export const commentsRepository = {
   },
 
   /*Метод "findAllByPostId()" для поиска комментариев в посте по ID в БД.*/
-  async findAllByPostId(postId: string): Promise<WithId<CommentType>[] | null> {
+  async findAllByPostId(postId: string): Promise<CommentDBType[] | null> {
     /*Просим коллекцию "commentsCollection" найти комментарии в посте по ID в БД.*/
-    const comments: WithId<CommentType>[] = await commentsCollection.find({ postId: postId }).toArray();
+    const comments: CommentDBType[] = await commentsCollection.find({ postId: postId }).toArray();
     /*Если комментариев не было найдено, то возвращаем null.*/
     if (!comments || comments.length === 0) return null;
     /*Если комментарии были найдены, то возвращаем их.*/
@@ -34,12 +35,9 @@ export const commentsRepository = {
   },
 
   /*Метод "findAllByUserId()" для поиска комментариев пользователя по ID в БД.*/
-  async findAllByUserId(userId: string): Promise<WithId<CommentType>[] | null> {
+  async findAllByUserId(userId: string): Promise<CommentDBType[] | null> {
     /*Просим коллекцию "commentsCollection" найти комментарии пользователя по ID в БД.*/
-    const comments: WithId<CommentType>[] = await commentsCollection
-      .find({ 'commentatorInfo.userId': userId })
-      .toArray();
-
+    const comments: CommentDBType[] = await commentsCollection.find({ 'commentatorInfo.userId': userId }).toArray();
     /*Если комментариев не было найдено, то возвращаем null.*/
     if (!comments || comments.length === 0) return null;
     /*Если комментарии были найдены, то возвращаем их.*/

@@ -5,7 +5,7 @@ import { body } from 'express-validator';
 2. Состоит из не менее 1 и не более 30 символов.*/
 export const titleValidation = body('title')
   .isString()
-  .withMessage('title must be a string')
+  .withMessage('Field "title" must be a string')
   .trim()
   .isLength({ min: 1, max: 30 });
 
@@ -14,7 +14,7 @@ export const titleValidation = body('title')
 2. Состоит из не менее 1 и не более 100 символов.*/
 export const shortDescriptionValidation = body('shortDescription')
   .isString()
-  .withMessage('shortDescription must be a string')
+  .withMessage('Field "shortDescription" must be a string')
   .trim()
   .isLength({ min: 1, max: 100 });
 
@@ -23,7 +23,7 @@ export const shortDescriptionValidation = body('shortDescription')
 2. Состоит из не менее 1 и не более 1000 символов.*/
 export const contentValidation = body('content')
   .isString()
-  .withMessage('content must be a string')
+  .withMessage('Field "content" must be a string')
   .trim()
   .isLength({ min: 1, max: 1000 });
 
@@ -32,7 +32,7 @@ export const contentValidation = body('content')
 2. Состоит из не менее 1 символа.*/
 export const blogIdValidation = body('blogId')
   .isString()
-  .withMessage('blogId must be a string')
+  .withMessage('Field "blogId" must be a string')
   .trim()
   .isLength({ min: 1 });
 

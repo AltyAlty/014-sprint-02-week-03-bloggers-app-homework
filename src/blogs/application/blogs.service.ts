@@ -1,6 +1,5 @@
 import { blogsRepository } from '../repositories/blogs.repository';
 import { BlogType } from '../types/blog.type';
-import { WithId } from 'mongodb';
 import { CreateBlogInputDTO } from '../routes/input-dto/create-blog.input-dto';
 import { UpdateBlogInputDTO } from '../routes/input-dto/update-blog.input-dto';
 import { postsService } from '../../posts/application/posts.service';
@@ -8,6 +7,7 @@ import { ResultStatuses } from '../../core/types/result/result-statuses';
 import { Result } from '../../core/types/result/result.type';
 import { BlogOutputDTO } from '../routes/output-dto/blog.output-dto';
 import { mapToBlogOutputDTO } from '../repositories/mappers/map-to-blog-output-dto.util';
+import { BlogDBType } from '../../db/types/blog-db.type';
 
 /*Сервис "blogsService" для работы с блогами.*/
 export const blogsService = {
@@ -36,7 +36,7 @@ export const blogsService = {
   /*Метод "findById()" для поиска блога по ID.*/
   async findById(blogId: string): Promise<Result<{ blogOutput: BlogOutputDTO } | null>> {
     /*Просим репозиторий "blogsRepository" найти блог по ID в БД.*/
-    const blogDB: WithId<BlogType> | null = await blogsRepository.findById(blogId);
+    const blogDB: BlogDBType | null = await blogsRepository.findById(blogId);
 
     /*Если блог не был найден, то возвращаем ResultObject с информацией об этом.*/
     if (!blogDB) {
@@ -85,7 +85,7 @@ export const blogsService = {
   /*Метод "deleteById()" для удаления блога по ID.*/
   async deleteById(blogId: string): Promise<Result<{} | null>> {
     /*Просим репозиторий "blogsRepository" найти блог по ID в БД.*/
-    const blogDB: WithId<BlogType> | null = await blogsRepository.findById(blogId);
+    const blogDB: BlogDBType | null = await blogsRepository.findById(blogId);
 
     /*Если блог не был найден, то возвращаем ResultObject с информацией об этом.*/
     if (!blogDB) {

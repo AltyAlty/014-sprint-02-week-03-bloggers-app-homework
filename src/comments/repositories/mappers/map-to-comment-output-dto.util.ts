@@ -1,10 +1,9 @@
-import { WithId } from 'mongodb';
-import { CommentType } from '../../types/comment.type';
 import { CommentOutputDTO } from '../../routes/output-dto/comment.output-dto';
+import { CommentDBType } from '../../../db/types/comment-db.type';
 
 /*Функция "mapToCommentOutputDTO()" преобразовывает комментарий из БД в подготовленный для отправки клиенту
 комментарий.*/
-export const mapToCommentOutputDTO = (comment: WithId<CommentType>): CommentOutputDTO => {
+export const mapToCommentOutputDTO = (comment: CommentDBType): CommentOutputDTO => {
   return {
     id: comment._id.toString(),
     content: comment.content,

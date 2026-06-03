@@ -8,13 +8,13 @@ import { param } from 'express-validator';
 4. Является типа ObjectId.*/
 export const idValidation = param('id')
   .exists()
-  .withMessage('id is required')
+  .withMessage('Field "id" is required')
   .isString()
-  .withMessage('id must be a string')
+  .withMessage('Field "id" must be a string')
   .isLength({ min: 1 })
-  .withMessage('id must not be empty')
+  .withMessage('Field "id" must not be empty')
   .isMongoId()
-  .withMessage('Incorrect format of ObjectId');
+  .withMessage('Field "id" has incorrect format of ObjectId');
 
 /*Middleware "blogIdValidation" проверяет, что поле "blogId":
 1. Существует в запросе.
@@ -23,13 +23,13 @@ export const idValidation = param('id')
 4. Является типа ObjectId.*/
 export const blogIdValidation = param('blogId')
   .exists()
-  .withMessage('blogId is required')
+  .withMessage('Field "blogId" is required')
   .isString()
-  .withMessage('blogId must be a string')
+  .withMessage('Field "blogId" must be a string')
   .isLength({ min: 1 })
-  .withMessage('blogId must not be empty')
+  .withMessage('Field "blogId" must not be empty')
   .isMongoId()
-  .withMessage('Incorrect format of ObjectId');
+  .withMessage('Field "blogId" has incorrect format of ObjectId');
 
 /*Middleware "postIdValidation" проверяет, что поле "postId":
 1. Существует в запросе.
@@ -38,10 +38,10 @@ export const blogIdValidation = param('blogId')
 4. Является типа ObjectId.*/
 export const postIdValidation = param('postId')
   .exists()
-  .withMessage('postId is required')
+  .withMessage('Field "postId" is required')
   .isString()
-  .withMessage('postId must be a string')
+  .withMessage('Field "postId" must be a string')
   .isLength({ min: 1 })
-  .withMessage('postId must not be empty')
+  .withMessage('Field "postId" must not be empty')
   .isMongoId()
-  .withMessage('Incorrect format of ObjectId');
+  .withMessage('Field "postId" has incorrect format of ObjectId');

@@ -22,7 +22,7 @@ export const createPost = async (
   const testBasicAuthToken = basicAuthToken ?? generateBasicAuthToken();
 
   const createPostResponse = await request(app)
-    .post(SETTINGS.POSTS_PATH)
+    .post(`${SETTINGS.POSTS_PATH}${SETTINGS.CREATE_POST_PATH}`)
     .set('Authorization', testBasicAuthToken)
     .send(testCreatePostData)
     .expect(testStatus);

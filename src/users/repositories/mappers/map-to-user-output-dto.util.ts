@@ -1,10 +1,9 @@
-import { WithId } from 'mongodb';
-import { UserType } from '../../types/user.type';
 import { UserOutputDTO } from '../../routes/output-dto/user.output-dto';
+import { UserDBType } from '../../../db/types/user-db.type';
 
 /*Функция "mapToUserOutputDTO()" преобразовывает пользователя из БД в подготовленного для отправки клиенту
 пользователя.*/
-export const mapToUserOutputDTO = (blog: WithId<UserType>): UserOutputDTO => {
+export const mapToUserOutputDTO = (blog: UserDBType): UserOutputDTO => {
   return {
     id: blog._id.toString(),
     login: blog.login,

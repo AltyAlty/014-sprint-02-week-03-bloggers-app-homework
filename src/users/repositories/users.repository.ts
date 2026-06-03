@@ -1,6 +1,7 @@
-import { DeleteResult, InsertOneResult, ObjectId, UpdateResult, WithId } from 'mongodb';
+import { DeleteResult, InsertOneResult, ObjectId, UpdateResult } from 'mongodb';
 import { usersCollection } from '../../db/mongodb/mongo.db';
 import { EmailConfirmationType, UserType } from '../types/user.type';
+import { UserDBType } from '../../db/types/user-db.type';
 
 /*Репозиторий "usersRepository" для работы с пользователями в БД.*/
 export const usersRepository = {
@@ -13,9 +14,9 @@ export const usersRepository = {
   },
 
   /*Метод "findById()" для поиска пользователя по ID в БД.*/
-  async findById(userId: string): Promise<WithId<UserType> | null> {
+  async findById(userId: string): Promise<UserDBType | null> {
     /*Просим коллекцию "usersCollection" найти пользователя по ID в БД.*/
-    const user: WithId<UserType> | null = await usersCollection.findOne({ _id: new ObjectId(userId) });
+    const user: UserDBType | null = await usersCollection.findOne({ _id: new ObjectId(userId) });
     /*Если пользователь не был найден, то возвращаем null.*/
     if (!user) return null;
     /*Если пользователь был найден, то возвращаем его.*/
@@ -23,9 +24,9 @@ export const usersRepository = {
   },
 
   /*Метод "findByEmail()" для поиска пользователя по email в БД.*/
-  async findByEmail(email: string): Promise<WithId<UserType> | null> {
+  async findByEmail(email: string): Promise<UserDBType | null> {
     /*Просим коллекцию "usersCollection" найти пользователя по email в БД.*/
-    const user: WithId<UserType> | null = await usersCollection.findOne({ email });
+    const user: UserDBType | null = await usersCollection.findOne({ email });
     /*Если пользователь не был найден, то возвращаем null.*/
     if (!user) return null;
     /*Если пользователь был найден, то возвращаем его.*/
@@ -33,9 +34,9 @@ export const usersRepository = {
   },
 
   /*Метод "findByLoginOrEmail()" для поиска пользователя по логину/email в БД.*/
-  async findByLoginOrEmail(loginOrEmail: string): Promise<WithId<UserType> | null> {
+  async findByLoginOrEmail(loginOrEmail: string): Promise<UserDBType | null> {
     /*Просим коллекцию "usersCollection" найти пользователя по логину/email в БД.*/
-    const user: WithId<UserType> | null = await usersCollection.findOne({
+    const user: UserDBType | null = await usersCollection.findOne({
       $or: [{ email: loginOrEmail }, { login: loginOrEmail }],
     });
 
@@ -46,9 +47,9 @@ export const usersRepository = {
   },
 
   /*Метод "findByConfirmationCode()" для поиска пользователя по коду подтверждения в БД.*/
-  async findByConfirmationCode(code: string): Promise<WithId<UserType> | null> {
+  async findByConfirmationCode(code: string): Promise<UserDBType | null> {
     /*Просим коллекцию "usersCollection" найти пользователя по коду подтверждения в БД.*/
-    const user: WithId<UserType> | null = await usersCollection.findOne({ 'emailConfirmation.confirmationCode': code });
+    const user: UserDBType | null = await usersCollection.findOne({ 'emailConfirmation.confirmationCode': code });
     /*Если пользователь не был найден, то возвращаем null.*/
     if (!user) return null;
     /*Если пользователь был найден, то возвращаем его.*/

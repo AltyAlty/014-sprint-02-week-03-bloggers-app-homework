@@ -1,16 +1,17 @@
-import { Filter, ObjectId, WithId } from 'mongodb';
+import { Filter, ObjectId } from 'mongodb';
 import { UserType } from '../types/user.type';
 import { usersCollection } from '../../db/mongodb/mongo.db';
 import { GetUsersListQueryInputDTO } from '../routes/input-dto/get-users-list-query.input-dto';
 import { SortDirection } from '../../core/types/pagination/sort-direction';
 import { UserSortFieldInputDTO } from '../routes/input-dto/user-sort-field.input-dto';
+import { UserDBType } from '../../db/types/user-db.type';
 
 /*Query-репозиторий "usersQueryRepository" для работы с пользователями в БД.*/
 export const usersQueryRepository = {
   /*Метод "findById()" для поиска пользователя по ID в БД.*/
-  async findById(userId: string): Promise<WithId<UserType> | null> {
+  async findById(userId: string): Promise<UserDBType | null> {
     /*Просим коллекцию "usersCollection" найти пользователя по ID в БД.*/
-    const user: WithId<UserType> | null = await usersCollection.findOne({ _id: new ObjectId(userId) });
+    const user: UserDBType | null = await usersCollection.findOne({ _id: new ObjectId(userId) });
     /*Если пользователь не был найден, то возвращаем null.*/
     if (!user) return null;
     /*Если пользователь был найден, то возвращаем его.*/
@@ -18,7 +19,7 @@ export const usersQueryRepository = {
   },
 
   /*Метод "findMany()" для поиска пользователей в БД.*/
-  async findMany(queryDTO: GetUsersListQueryInputDTO): Promise<{ items: WithId<UserType>[]; totalCount: number }> {
+  async findMany(queryDTO: GetUsersListQueryInputDTO): Promise<{ items: UserDBType[]; totalCount: number }> {
     /*Создаем переменные на основе параметра "queryDTO" при помощи деструктуризации.*/
     const {
       pageNumber,
@@ -48,7 +49,7 @@ export const usersQueryRepository = {
 
     /*Просим коллекцию "usersCollection" найти пользователей по ID в БД и подсчитать общее количество документов,
     подходящих под фильтр, без учета пагинации.*/
-    const [items, totalCount]: [WithId<UserType>[], number] = await Promise.all([
+    const [items, totalCount]: [UserDBType[], number] = await Promise.all([
       usersCollection
         .find(filter)
         .sort({ [sortBy]: sortDirection })

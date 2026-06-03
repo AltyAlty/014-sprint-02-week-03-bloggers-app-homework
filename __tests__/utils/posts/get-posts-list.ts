@@ -9,7 +9,7 @@ export const getPostsList = async (
   urlWithPagination?: string,
   expectedStatus?: HttpStatuses
 ): Promise<PaginatedPostsListOutputDTO> => {
-  const url = urlWithPagination ?? `${SETTINGS.POSTS_PATH}`;
+  const url = urlWithPagination ?? `${SETTINGS.POSTS_PATH}${SETTINGS.GET_POSTS_LIST_PATH}`;
   const testStatus = expectedStatus ?? HttpStatuses.Ok_200;
   const getPostsListResponse = await request(app).get(url).expect(testStatus);
   return getPostsListResponse.body;

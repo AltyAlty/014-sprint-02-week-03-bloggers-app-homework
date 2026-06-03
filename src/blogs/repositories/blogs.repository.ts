@@ -1,7 +1,8 @@
-import { DeleteResult, InsertOneResult, ObjectId, UpdateResult, WithId } from 'mongodb';
+import { DeleteResult, InsertOneResult, ObjectId, UpdateResult } from 'mongodb';
 import { blogsCollection } from '../../db/mongodb/mongo.db';
 import { BlogType } from '../types/blog.type';
 import { UpdateBlogInputDTO } from '../routes/input-dto/update-blog.input-dto';
+import { BlogDBType } from '../../db/types/blog-db.type';
 
 /*Репозиторий "blogsRepository" для работы с блогами в БД.*/
 export const blogsRepository = {
@@ -14,9 +15,9 @@ export const blogsRepository = {
   },
 
   /*Метод "findById()" для поиска блога по ID в БД.*/
-  async findById(blogId: string): Promise<WithId<BlogType> | null> {
+  async findById(blogId: string): Promise<BlogDBType | null> {
     /*Просим коллекцию "blogsCollection" найти блог по ID в БД.*/
-    const blog: WithId<BlogType> | null = await blogsCollection.findOne({ _id: new ObjectId(blogId) });
+    const blog: BlogDBType | null = await blogsCollection.findOne({ _id: new ObjectId(blogId) });
     /*Если блог не был найден, то возвращаем null.*/
     if (!blog) return null;
     /*Если блог был найден, то возвращаем его.*/

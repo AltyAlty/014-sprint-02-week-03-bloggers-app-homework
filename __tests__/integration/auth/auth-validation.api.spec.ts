@@ -9,7 +9,7 @@ import { CreateUserInputDTO } from '../../../src/users/routes/input-dto/create-u
 import { UserOutputDTO } from '../../../src/users/routes/output-dto/user.output-dto';
 import { LoginDataInputDTO } from '../../../src/auth/routes/input-dto/login-data.input-dto';
 import { MeOutputDTO } from '../../../src/auth/routes/output-dto/me.output-dto';
-import { getAuthUserDataByAccessToken } from '../../utils/auth/get-auth-user-data-by-access-token';
+import { getAuthDataByAccessToken } from '../../utils/auth/get-auth-data-by-access-token';
 
 describe('Auth API validation', () => {
   const app = doBeforeTests();
@@ -150,15 +150,15 @@ describe('Auth API validation', () => {
     const accessToken: string = await loginUser(app, loginUserData);
     const testStatus: HttpStatuses = HttpStatuses.Unauthorized_401;
 
-    await getAuthUserDataByAccessToken(app, incorrectAccessToken_01, testStatus);
-    await getAuthUserDataByAccessToken(app, incorrectAccessToken_02, testStatus);
-    await getAuthUserDataByAccessToken(app, incorrectAccessToken_03, testStatus);
-    await getAuthUserDataByAccessToken(app, incorrectAccessToken_04, testStatus);
-    await getAuthUserDataByAccessToken(app, incorrectAccessToken_05, testStatus);
-    await getAuthUserDataByAccessToken(app, incorrectAccessToken_06, testStatus);
-    await getAuthUserDataByAccessToken(app, incorrectAccessToken_07, testStatus);
-    await getAuthUserDataByAccessToken(app, incorrectAccessToken_08, testStatus);
-    const authCreatedUserData: MeOutputDTO = await getAuthUserDataByAccessToken(app, accessToken);
+    await getAuthDataByAccessToken(app, incorrectAccessToken_01, testStatus);
+    await getAuthDataByAccessToken(app, incorrectAccessToken_02, testStatus);
+    await getAuthDataByAccessToken(app, incorrectAccessToken_03, testStatus);
+    await getAuthDataByAccessToken(app, incorrectAccessToken_04, testStatus);
+    await getAuthDataByAccessToken(app, incorrectAccessToken_05, testStatus);
+    await getAuthDataByAccessToken(app, incorrectAccessToken_06, testStatus);
+    await getAuthDataByAccessToken(app, incorrectAccessToken_07, testStatus);
+    await getAuthDataByAccessToken(app, incorrectAccessToken_08, testStatus);
+    const authCreatedUserData: MeOutputDTO = await getAuthDataByAccessToken(app, accessToken);
 
     expect(authCreatedUserData).toEqual({
       login: createUserLogin,

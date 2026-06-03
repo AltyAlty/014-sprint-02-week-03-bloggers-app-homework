@@ -1,16 +1,17 @@
 import { GetBlogsListQueryInputDTO } from '../routes/input-dto/get-blogs-list-query.input-dto';
-import { Filter, ObjectId, WithId } from 'mongodb';
+import { Filter, ObjectId } from 'mongodb';
 import { BlogType } from '../types/blog.type';
 import { blogsCollection } from '../../db/mongodb/mongo.db';
 import { BlogSortFieldInputDTO } from '../routes/input-dto/blog-sort-field.input-dto';
 import { SortDirection } from '../../core/types/pagination/sort-direction';
+import { BlogDBType } from '../../db/types/blog-db.type';
 
 /*Query-репозиторий "blogsQueryRepository" для работы с блогами в БД.*/
 export const blogsQueryRepository = {
   /*Метод "findById()" для поиска блога по ID в БД.*/
-  async findById(blogId: string): Promise<WithId<BlogType> | null> {
+  async findById(blogId: string): Promise<BlogDBType | null> {
     /*Просим коллекцию "blogsCollection" найти блог по ID в БД.*/
-    const blog: WithId<BlogType> | null = await blogsCollection.findOne({ _id: new ObjectId(blogId) });
+    const blog: BlogDBType | null = await blogsCollection.findOne({ _id: new ObjectId(blogId) });
     /*Если блог не был найден, то возвращаем null.*/
     if (!blog) return null;
     /*Если блог был найден, то возвращаем его.*/
@@ -18,7 +19,7 @@ export const blogsQueryRepository = {
   },
 
   /*Метод "findMany()" для поиска блогов в БД.*/
-  async findMany(queryDTO: GetBlogsListQueryInputDTO): Promise<{ items: WithId<BlogType>[]; totalCount: number }> {
+  async findMany(queryDTO: GetBlogsListQueryInputDTO): Promise<{ items: BlogDBType[]; totalCount: number }> {
     /*Создаем переменные на основе параметра "queryDTO" при помощи деструктуризации.*/
     const {
       pageNumber,
@@ -51,7 +52,7 @@ export const blogsQueryRepository = {
     3. ".skip(skip)": пропускаем нужное количество записей, чтобы взять записи для запрошенной страницы.
     4. ".limit(pageSize)": берем записей не больше размера запрошенной страницы.
     5. ".toArray()": превращаем курсор в обычный массив и возвращаем его.*/
-    const [items, totalCount]: [WithId<BlogType>[], number] = await Promise.all([
+    const [items, totalCount]: [BlogDBType[], number] = await Promise.all([
       blogsCollection
         .find(filter)
         .sort({ [sortBy]: sortDirection })

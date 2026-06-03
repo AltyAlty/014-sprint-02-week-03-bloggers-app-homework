@@ -7,7 +7,7 @@ import { doBeforeTests } from '../../utils/common/do-before-tests';
 import { CreateUserInputDTO } from '../../../src/users/routes/input-dto/create-user.input-dto';
 import { LoginDataInputDTO } from '../../../src/auth/routes/input-dto/login-data.input-dto';
 import { UserOutputDTO } from '../../../src/users/routes/output-dto/user.output-dto';
-import { getAuthUserDataByAccessToken } from '../../utils/auth/get-auth-user-data-by-access-token';
+import { getAuthDataByAccessToken } from '../../utils/auth/get-auth-data-by-access-token';
 import { MeOutputDTO } from '../../../src/auth/routes/output-dto/me.output-dto';
 
 describe('Auth API', () => {
@@ -47,7 +47,7 @@ describe('Auth API', () => {
     const loginUserData: LoginDataInputDTO = { loginOrEmail: createUserLogin, password: createUserPassword };
     const accessToken: string = await loginUser(app, loginUserData);
 
-    const authCreatedUserData: MeOutputDTO = await getAuthUserDataByAccessToken(app, accessToken);
+    const authCreatedUserData: MeOutputDTO = await getAuthDataByAccessToken(app, accessToken);
 
     expect(authCreatedUserData).toEqual({
       login: createUserLogin,

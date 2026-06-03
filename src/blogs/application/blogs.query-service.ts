@@ -6,15 +6,14 @@ import { mapToBlogOutputDTO } from '../repositories/mappers/map-to-blog-output-d
 import { BlogOutputDTO } from '../routes/output-dto/blog.output-dto';
 import { ResultStatuses } from '../../core/types/result/result-statuses';
 import { Result } from '../../core/types/result/result.type';
-import { WithId } from 'mongodb';
-import { BlogType } from '../types/blog.type';
+import { BlogDBType } from '../../db/types/blog-db.type';
 
 /*Query-сервис "blogsQueryService" для работы с блогами.*/
 export const blogsQueryService = {
   /*Метод "findById()" для поиска блога по ID.*/
   async findById(blogId: string): Promise<Result<{ blogOutput: BlogOutputDTO } | null>> {
     /*Просим query-репозиторий "blogsQueryRepository" найти блог по ID в БД.*/
-    const blogDB: WithId<BlogType> | null = await blogsQueryRepository.findById(blogId);
+    const blogDB: BlogDBType | null = await blogsQueryRepository.findById(blogId);
 
     /*Если блог не был найден, то возвращаем ResultObject с информацией об этом.*/
     if (!blogDB) {
@@ -42,7 +41,7 @@ export const blogsQueryService = {
     queryDTO: GetBlogsListQueryInputDTO
   ): Promise<Result<{ paginatedBlogsListOutput: PaginatedBlogsListOutputDTO }>> {
     /*Просим query-репозиторий "blogsQueryRepository" найти блоги в БД.*/
-    const { items, totalCount }: { items: WithId<BlogType>[]; totalCount: number } =
+    const { items, totalCount }: { items: BlogDBType[]; totalCount: number } =
       await blogsQueryRepository.findMany(queryDTO);
 
     /*Преобразовываем блоги из БД в подготовленные для пагинации блоги.*/

@@ -1,6 +1,6 @@
-import { Router, Request, Response } from 'express';
-import { HttpStatuses } from '../../core/types/http-statuses';
-import { blogsCollection, commentsCollection, postsCollection, usersCollection } from '../../db/mongodb/mongo.db';
+import { Router } from 'express';
+import { clearDbHandler } from './handlers/clear-db.handler';
+import { SETTINGS } from '../../core/settings/settings';
 
 /*Роутер из Express для тестирования приложения.*/
 export const testingRouter = Router({});
@@ -8,12 +8,4 @@ export const testingRouter = Router({});
 /*Конфигурируем роутер "testingRouter".*/
 testingRouter
   /*DELETE-запрос по очистке БД для целей тестирования.*/
-  .delete('/all-data', async (req: Request, res: Response) => {
-    await Promise.all([
-      blogsCollection.deleteMany(),
-      postsCollection.deleteMany(),
-      commentsCollection.deleteMany(),
-      usersCollection.deleteMany(),
-    ]);
-    res.sendStatus(HttpStatuses.NoContent_204);
-  });
+  .delete(SETTINGS.CLEAR_DB_PATH, clearDbHandler);

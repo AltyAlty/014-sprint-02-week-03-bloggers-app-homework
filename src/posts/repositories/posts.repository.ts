@@ -1,7 +1,8 @@
 import { postsCollection } from '../../db/mongodb/mongo.db';
 import { PostType } from '../types/post.type';
-import { DeleteResult, InsertOneResult, ObjectId, UpdateResult, WithId } from 'mongodb';
+import { DeleteResult, InsertOneResult, ObjectId, UpdateResult } from 'mongodb';
 import { UpdatePostInputDTO } from '../routes/input-dto/update-post.input-dto';
+import { PostDBType } from '../../db/types/post-db.type';
 
 /*Репозиторий "postsRepository" для работы с постами в БД.*/
 export const postsRepository = {
@@ -14,9 +15,9 @@ export const postsRepository = {
   },
 
   /*Метод "findById()" для поиска поста по ID в БД.*/
-  async findById(postId: string): Promise<WithId<PostType> | null> {
+  async findById(postId: string): Promise<PostDBType | null> {
     /*Просим коллекцию "postsCollection" найти пост по ID в БД.*/
-    const post: WithId<PostType> | null = await postsCollection.findOne({ _id: new ObjectId(postId) });
+    const post: PostDBType | null = await postsCollection.findOne({ _id: new ObjectId(postId) });
     /*Если пост не был найден, то возвращаем null.*/
     if (!post) return null;
     /*Если пост был найден, то возвращаем его.*/
@@ -24,9 +25,9 @@ export const postsRepository = {
   },
 
   /*Метод "findAllByBlogId()" для поиска постов в блоге по ID в БД.*/
-  async findAllByBlogId(blogId: string): Promise<WithId<PostType>[] | null> {
+  async findAllByBlogId(blogId: string): Promise<PostDBType[] | null> {
     /*Просим коллекцию "postsCollection" найти посты в блоге по ID в БД.*/
-    const posts: WithId<PostType>[] = await postsCollection.find({ blogId: blogId }).toArray();
+    const posts: PostDBType[] = await postsCollection.find({ blogId: blogId }).toArray();
     /*Если постов не было найдено, то возвращаем null.*/
     if (!posts || posts.length === 0) return null;
     /*Если посты были найдены, то возвращаем их.*/

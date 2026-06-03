@@ -1,11 +1,10 @@
-import { WithId } from 'mongodb';
-import { BlogType } from '../../types/blog.type';
 import { PaginatedBlogsListOutputDTO } from '../../routes/output-dto/paginated-blogs-list.output-dto';
 import { BlogOutputDTO } from '../../routes/output-dto/blog.output-dto';
+import { BlogDBType } from '../../../db/types/blog-db.type';
 
 /*Функция "mapToPaginatedBlogsListOutputDTO()" преобразовывает блоги из БД в подготовленные для пагинации блоги.*/
 export const mapToPaginatedBlogsListOutputDTO = (
-  blogs: WithId<BlogType>[],
+  blogs: BlogDBType[],
   meta: { pageNumber: number; pageSize: number; totalCount: number }
 ): PaginatedBlogsListOutputDTO => {
   return {

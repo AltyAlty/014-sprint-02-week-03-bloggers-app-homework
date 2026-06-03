@@ -1,9 +1,8 @@
-import { WithId } from 'mongodb';
-import { PostType } from '../../types/post.type';
 import { PostOutputDTO } from '../../routes/output-dto/post.output-dto';
+import { PostDBType } from '../../../db/types/post-db.type';
 
 /*Функция "mapToPostOutputDTO()" преобразовывает пост из БД в подготовленный для отправки клиенту пост.*/
-export const mapToPostOutputDTO = (post: WithId<PostType>): PostOutputDTO => {
+export const mapToPostOutputDTO = (post: PostDBType): PostOutputDTO => {
   return {
     id: post._id.toString(),
     title: post.title,

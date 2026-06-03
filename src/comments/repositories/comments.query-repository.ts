@@ -1,16 +1,17 @@
-import { Filter, ObjectId, WithId } from 'mongodb';
+import { Filter, ObjectId } from 'mongodb';
 import { CommentType } from '../types/comment.type';
 import { commentsCollection } from '../../db/mongodb/mongo.db';
 import { GetCommentsListInPostQueryInputDTO } from '../routes/input-dto/get-comments-list-in-post-query.input-dto';
 import { SortDirection } from '../../core/types/pagination/sort-direction';
 import { CommentSortFieldInputDTO } from '../routes/input-dto/comment-sort-field.input-dto';
+import { CommentDBType } from '../../db/types/comment-db.type';
 
 /*Query-репозиторий "commentsQueryRepository" для работы с комментариями в БД.*/
 export const commentsQueryRepository = {
   /*Метод "findById()" для поиска комментария по ID в БД.*/
-  async findById(commentId: string): Promise<WithId<CommentType> | null> {
+  async findById(commentId: string): Promise<CommentDBType | null> {
     /*Просим коллекцию "commentsCollection" найти комментарий по ID в БД.*/
-    const comment: WithId<CommentType> | null = await commentsCollection.findOne({ _id: new ObjectId(commentId) });
+    const comment: CommentDBType | null = await commentsCollection.findOne({ _id: new ObjectId(commentId) });
     /*Если комментарий не был найден, то возвращаем null.*/
     if (!comment) return null;
     /*Если комментарий был найден, то возвращаем его.*/
@@ -21,7 +22,7 @@ export const commentsQueryRepository = {
   async findManyByPostId(
     postId: string,
     queryDTO: GetCommentsListInPostQueryInputDTO
-  ): Promise<{ items: WithId<CommentType>[]; totalCount: number }> {
+  ): Promise<{ items: CommentDBType[]; totalCount: number }> {
     /*Создаем переменные на основе параметра "queryDTO" при помощи деструктуризации.*/
     const {
       pageNumber,
@@ -45,7 +46,7 @@ export const commentsQueryRepository = {
 
     /*Просим коллекцию "commentsCollection" найти комментарии в посте по ID в БД и подсчитать общее количество
     документов, подходящих под фильтр, без учета пагинации.*/
-    const [items, totalCount]: [WithId<CommentType>[], number] = await Promise.all([
+    const [items, totalCount]: [CommentDBType[], number] = await Promise.all([
       commentsCollection
         .find(filter)
         .sort({ [sortBy]: sortDirection })

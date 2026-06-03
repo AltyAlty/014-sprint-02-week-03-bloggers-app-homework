@@ -5,11 +5,42 @@ export const SETTINGS = {
   MONGO_URL: process.env.MONGO_URL || '',
 
   BLOGS_PATH: '/api/blogs',
+  GET_BLOGS_LIST_PATH: '',
+  CREATE_BLOG_PATH: '',
+  GET_POSTS_LIST_BY_BLOG_ID_PATH: '/:blogId/posts',
+  CREATE_POST_IN_BLOG_PATH: '/:blogId/posts',
+  GET_BLOG_BY_ID_PATH: '/:id',
+  UPDATE_BLOG_BY_ID_PATH: '/:id',
+  DELETE_BLOG_BY_ID_PATH: '/:id',
+
   POSTS_PATH: '/api/posts',
+  GET_COMMENTS_LIST_BY_POST_ID_PATH: '/:postId/comments',
+  CREATE_COMMENT_IN_POST_PATH: '/:postId/comments',
+  GET_POSTS_LIST_PATH: '',
+  CREATE_POST_PATH: '',
+  GET_POST_BY_ID_PATH: '/:id',
+  UPDATE_POST_BY_ID_PATH: '/:id',
+  DELETE_POST_BY_ID_PATH: '/:id',
+
   COMMENTS_PATH: '/api/comments',
+  UPDATE_COMMENT_BY_ID_PATH: '/:id',
+  DELETE_COMMENT_BY_ID_PATH: '/:id',
+  GET_COMMENT_BY_ID_PATH: '/:id',
+
   USERS_PATH: '/api/users',
+  GET_USERS_LIST_PATH: '',
+  CREATE_USER_PATH: '',
+  DELETE_USER_BY_ID_PATH: '/:id',
+
   AUTH_PATH: '/api/auth',
+  AUTH_BY_LOGIN_OR_EMAIL_PATH: '/login',
+  GET_AUTH_DATA_BY_TOKEN_PATH: '/me',
+  REGISTER_USER_PATH: '/registration',
+  CONFIRM_USER_BY_CODE_PATH: '/registration-confirmation',
+  RESEND_CONFIRMATION_EMAIL_PATH: '/registration-email-resending',
+
   TESTING_PATH: '/api/testing',
+  CLEAR_DB_PATH: '/all-data',
 
   DB_NAME: process.env.DB_NAME || '012-s-02-w-03-bloggers-app-hw',
   TEST_DB_NAME: process.env.DB_NAME || '012-s-02-w-03-bloggers-app-hw-test',

@@ -18,17 +18,8 @@ export const authService = {
   async loginUser(loginOrEmail: string, password: string): Promise<Result<{ accessToken: string } | null>> {
     /*Просим сервис "authService" проверить подлинность логина/email и пароля пользователя.*/
     const checkedUserCredentialsResult = await this.checkUserCredentials(loginOrEmail, password);
-
     /*Если проверка не прошла успешно, то возвращаем ResultObject с информацией об этом.*/
-    if (checkedUserCredentialsResult.status !== ResultStatuses.Ok) {
-      return {
-        status: ResultStatuses.Unauthorized,
-        errorMessage: 'Unauthorized',
-        extensions: [{ field: 'loginOrEmail', message: 'Wrong credentials' }],
-        data: null,
-      };
-    }
-
+    if (checkedUserCredentialsResult.status !== ResultStatuses.Ok) return checkedUserCredentialsResult as Result;
     /*Если проверка прошла успешно, то просим адаптер "jwtAdapter" создать AT.*/
     const accessToken: string = await jwtAdapter.createToken(checkedUserCredentialsResult.data!.id);
 
@@ -47,12 +38,12 @@ export const authService = {
       await usersService.findByLoginOrEmail(loginOrEmail);
 
     /*Если пользователь не был найден, то возвращаем ResultObject с информацией об этом.*/
-    if (!userResult) {
+    if (userResult.status !== ResultStatuses.Ok) {
       return {
-        status: ResultStatuses.NotFound,
+        status: ResultStatuses.Unauthorized,
         data: null,
-        errorMessage: 'Not Found',
-        extensions: [{ field: 'loginOrEmail', message: 'Not Found' }],
+        errorMessage: 'Unauthorized',
+        extensions: [{ field: 'loginOrEmail', message: 'Unauthorized' }],
       };
     }
 
@@ -65,10 +56,10 @@ export const authService = {
     /*Если пароль не корректный, то возвращаем ResultObject с информацией об этом.*/
     if (!isPasswordCorrect) {
       return {
-        status: ResultStatuses.BadRequest,
+        status: ResultStatuses.Unauthorized,
         data: null,
-        errorMessage: 'Bad Request',
-        extensions: [{ field: 'password', message: 'Wrong password' }],
+        errorMessage: 'Unauthorized',
+        extensions: [{ field: 'password', message: 'Unauthorized' }],
       };
     }
 
@@ -129,7 +120,7 @@ export const authService = {
 
     /*Если данные для подтверждения регистрации пользователя не были изменены, то возвращаем ResultObject с информацией
     об этом.*/
-    if (!updateUserResult.data) return updateUserResult;
+    if (updateUserResult.status !== ResultStatuses.NoContent) return updateUserResult;
 
     /*Просим адаптер "nodemailerAdapter" повторно отправить письмо о подтверждении почты пользователю.*/
     await nodemailerAdapter

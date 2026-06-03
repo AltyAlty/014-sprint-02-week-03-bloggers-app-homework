@@ -18,7 +18,7 @@ export const createBlog = async (
   const testBasicAuthToken = basicAuthToken ?? generateBasicAuthToken();
 
   const createBlogResponse = await request(app)
-    .post(SETTINGS.BLOGS_PATH)
+    .post(`${SETTINGS.BLOGS_PATH}${SETTINGS.CREATE_BLOG_PATH}`)
     .set('Authorization', testBasicAuthToken)
     .send(testCreateBlogData)
     .expect(testStatus);

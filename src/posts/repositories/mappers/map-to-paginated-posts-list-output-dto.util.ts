@@ -1,11 +1,10 @@
-import { WithId } from 'mongodb';
-import { PostType } from '../../types/post.type';
 import { PaginatedPostsListOutputDTO } from '../../routes/output-dto/paginated-posts-list.output-dto';
 import { PostOutputDTO } from '../../routes/output-dto/post.output-dto';
+import { PostDBType } from '../../../db/types/post-db.type';
 
 /*Функция "mapToPaginatedPostsListOutputDTO()" преобразовывает посты из БД в подготовленные для пагинации посты.*/
 export const mapToPaginatedPostsListOutputDTO = (
-  posts: WithId<PostType>[],
+  posts: PostDBType[],
   meta: { pageNumber: number; pageSize: number; totalCount: number }
 ): PaginatedPostsListOutputDTO => {
   return {

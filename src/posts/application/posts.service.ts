@@ -1,6 +1,5 @@
 import { postsRepository } from '../repositories/posts.repository';
 import { PostType } from '../types/post.type';
-import { WithId } from 'mongodb';
 import { CreatePostInputDTO } from '../routes/input-dto/create-post.input-dto';
 import { UpdatePostInputDTO } from '../routes/input-dto/update-post.input-dto';
 import { ResultStatuses } from '../../core/types/result/result-statuses';
@@ -10,6 +9,7 @@ import { blogsService } from '../../blogs/application/blogs.service';
 import { BlogOutputDTO } from '../../blogs/routes/output-dto/blog.output-dto';
 import { PostOutputDTO } from '../routes/output-dto/post.output-dto';
 import { mapToPostOutputDTO } from '../repositories/mappers/map-to-post-output-dto.util';
+import { PostDBType } from '../../db/types/post-db.type';
 
 /*Сервис "postsService" для работы с постами.*/
 export const postsService = {
@@ -17,16 +17,8 @@ export const postsService = {
   async create(dto: CreatePostInputDTO): Promise<Result<{ postId: string } | null>> {
     /*Просим сервис "blogsService" найти блог по ID.*/
     const blogResult: Result<{ blogOutput: BlogOutputDTO } | null> = await blogsService.findById(dto.blogId);
-
     /*Если блог не был найден, то возвращаем ResultObject с информацией об этом.*/
-    if (!blogResult.data) {
-      return {
-        status: ResultStatuses.NotFound,
-        data: null,
-        errorMessage: 'Not Found',
-        extensions: [{ field: 'blogId', message: 'Not Found' }],
-      };
-    }
+    if (blogResult.status !== ResultStatuses.Ok) return blogResult as Result;
 
     /*Если блог был найден, то создаем объект с данными нового поста.*/
     const newPost: PostType = {
@@ -52,7 +44,7 @@ export const postsService = {
   /*Метод "findById()" для поиска поста по ID.*/
   async findById(postId: string): Promise<Result<{ postOutput: PostOutputDTO } | null>> {
     /*Просим репозиторий "postsRepository" найти пост по ID в БД.*/
-    const postDB: WithId<PostType> | null = await postsRepository.findById(postId);
+    const postDB: PostDBType | null = await postsRepository.findById(postId);
 
     /*Если пост не был найден, то возвращаем ResultObject с информацией об этом.*/
     if (!postDB) {
@@ -76,9 +68,9 @@ export const postsService = {
   },
 
   /*Метод "findAllByBlogId()" для поиска постов в блоге по ID.*/
-  async findAllByBlogId(blogId: string): Promise<Result<{ postsDB: WithId<PostType>[] } | null>> {
+  async findAllByBlogId(blogId: string): Promise<Result<{ postsDB: PostDBType[] } | null>> {
     /*Просим репозиторий "postsRepository" найти посты в блоге по ID в БД.*/
-    const postsDB: WithId<PostType>[] | null = await postsRepository.findAllByBlogId(blogId);
+    const postsDB: PostDBType[] | null = await postsRepository.findAllByBlogId(blogId);
 
     /*Если посты не были найдены, то возвращаем ResultObject с информацией об этом.*/
     if (!postsDB) {
@@ -150,19 +142,10 @@ export const postsService = {
   async deleteManyByBlogId(blogId: string): Promise<Result<{ deletedPostsCount: number } | null>> {
     /*Просим сервис "blogsService" найти блог по ID.*/
     const blogResult: Result<{ blogOutput: BlogOutputDTO } | null> = await blogsService.findById(blogId);
-
     /*Если блог не был найден, то возвращаем ResultObject с информацией об этом.*/
-    if (!blogResult.data) {
-      return {
-        status: ResultStatuses.NotFound,
-        data: null,
-        errorMessage: 'Not Found',
-        extensions: [{ field: 'blogId', message: 'Not Found' }],
-      };
-    }
-
+    if (blogResult.status !== ResultStatuses.Ok) return blogResult as Result;
     /*Если блог был найден, то просим репозиторий "postsRepository" найти посты в блоге по ID в БД.*/
-    const postsDB: WithId<PostType>[] | null = await postsRepository.findAllByBlogId(blogId);
+    const postsDB: PostDBType[] | null = await postsRepository.findAllByBlogId(blogId);
 
     /*Если посты в блоге были найдены, то удаляем комментарии внутри постов.*/
     if (postsDB) {

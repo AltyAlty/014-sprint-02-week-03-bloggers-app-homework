@@ -18,7 +18,7 @@ export const createUser = async (
   const testBasicAuthToken = basicAuthToken ?? generateBasicAuthToken();
 
   const createUserResponse = await request(app)
-    .post(SETTINGS.USERS_PATH)
+    .post(`${SETTINGS.USERS_PATH}${SETTINGS.CREATE_USER_PATH}`)
     .set('Authorization', testBasicAuthToken)
     .send(testCreateUserData)
     .expect(testStatus);

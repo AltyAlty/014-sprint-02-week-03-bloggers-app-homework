@@ -14,7 +14,7 @@ export const loginUser = async (
   const testStatus = expectedStatus ?? HttpStatuses.Ok_200;
 
   const loginUserResponse = await request(app)
-    .post(`${SETTINGS.AUTH_PATH}/login`)
+    .post(`${SETTINGS.AUTH_PATH}${SETTINGS.AUTH_BY_LOGIN_OR_EMAIL_PATH}`)
     .send(testLoginData)
     .expect(testStatus);
 

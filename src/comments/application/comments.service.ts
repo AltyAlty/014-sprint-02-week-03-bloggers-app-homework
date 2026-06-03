@@ -4,11 +4,11 @@ import { commentsRepository } from '../repositories/comments.repository';
 import { ResultStatuses } from '../../core/types/result/result-statuses';
 import { CreateCommentInPostInputDTO } from '../routes/input-dto/create-comment-in-post.input-dto';
 import { CommentType } from '../types/comment.type';
-import { WithId } from 'mongodb';
 import { usersService } from '../../users/application/users.service';
 import { UserOutputDTO } from '../../users/routes/output-dto/user.output-dto';
 import { postsService } from '../../posts/application/posts.service';
 import { PostOutputDTO } from '../../posts/routes/output-dto/post.output-dto';
+import { CommentDBType } from '../../db/types/comment-db.type';
 
 /*Сервис "commentsService" для работы с комментариями.*/
 export const commentsService = {
@@ -20,29 +20,12 @@ export const commentsService = {
   ): Promise<Result<{ commentId: string } | null>> {
     /*Просим сервис "usersService" найти пользователя по ID.*/
     const userResult: Result<{ userOutput: UserOutputDTO } | null> = await usersService.findById(userId);
-
     /*Если пользователь не был найден, то возвращаем ResultObject с информацией об этом.*/
-    if (!userResult.data) {
-      return {
-        status: ResultStatuses.NotFound,
-        data: null,
-        errorMessage: 'Not Found',
-        extensions: [{ field: 'userId', message: 'Not Found' }],
-      };
-    }
-
+    if (userResult.status !== ResultStatuses.Ok) return userResult as Result;
     /*Если пользователь был найден, то просим сервис "postsService" найти пост по ID.*/
     const postResult: Result<{ postOutput: PostOutputDTO } | null> = await postsService.findById(postId);
-
     /*Если пост не был найден, то возвращаем ResultObject с информацией об этом.*/
-    if (!postResult.data) {
-      return {
-        status: ResultStatuses.NotFound,
-        data: null,
-        errorMessage: 'Not Found',
-        extensions: [{ field: 'postId', message: 'Not Found' }],
-      };
-    }
+    if (postResult.status !== ResultStatuses.Ok) return postResult as Result;
 
     /*Если пользователь и пост были найдены, то создаем объект с данными нового комментария.*/
     const newComment: CommentType = {
@@ -64,9 +47,9 @@ export const commentsService = {
   },
 
   /*Метод "findAllByPostId()" для поиска комментариев в посте по ID.*/
-  async findAllByPostId(postId: string): Promise<Result<{ commentsDB: WithId<CommentType>[] } | null>> {
+  async findAllByPostId(postId: string): Promise<Result<{ commentsDB: CommentDBType[] } | null>> {
     /*Просим репозиторий "commentsRepository" найти комментарии в посте по ID в БД.*/
-    const commentsDB: WithId<CommentType>[] | null = await commentsRepository.findAllByPostId(postId);
+    const commentsDB: CommentDBType[] | null = await commentsRepository.findAllByPostId(postId);
 
     /*Если комментарии не были найдены, то возвращаем ResultObject с информацией об этом.*/
     if (!commentsDB) {
@@ -87,9 +70,9 @@ export const commentsService = {
   },
 
   /*Метод "findAllByUserId()" для поиска комментариев пользователя по ID.*/
-  async findAllByUserId(userId: string): Promise<Result<{ commentsDB: WithId<CommentType>[] } | null>> {
+  async findAllByUserId(userId: string): Promise<Result<{ commentsDB: CommentDBType[] } | null>> {
     /*Просим репозиторий "commentsRepository" найти комментарии пользователя по ID.*/
-    const commentsDB: WithId<CommentType>[] | null = await commentsRepository.findAllByUserId(userId);
+    const commentsDB: CommentDBType[] | null = await commentsRepository.findAllByUserId(userId);
 
     /*Если комментарии не были найдены, то возвращаем ResultObject с информацией об этом.*/
     if (!commentsDB) {
@@ -97,7 +80,7 @@ export const commentsService = {
         status: ResultStatuses.NotFound,
         data: null,
         errorMessage: 'Not Found',
-        extensions: [{ field: 'postId', message: 'Not Found' }],
+        extensions: [{ field: 'userId', message: 'Not Found' }],
       };
     }
 
@@ -112,7 +95,7 @@ export const commentsService = {
   /*Метод "updateById()" для изменения комментария по ID.*/
   async updateById(commentId: string, dto: UpdateCommentInputDTO, userId?: string): Promise<Result<{} | null>> {
     /*Просим репозиторий "commentsRepository" найти комментарий по ID в БД.*/
-    const commentDB: WithId<CommentType> | null = await commentsRepository.findById(commentId);
+    const commentDB: CommentDBType | null = await commentsRepository.findById(commentId);
 
     /*Если комментарий не был найден, то возвращаем ResultObject с информацией об этом.*/
     if (!commentDB) {
@@ -150,7 +133,7 @@ export const commentsService = {
   /*Метод "deleteById()" для удаления комментария по ID.*/
   async deleteById(commentId: string, userId?: string): Promise<Result<{} | null>> {
     /*Просим репозиторий "commentsRepository" найти комментарий по ID в БД.*/
-    const commentDB: WithId<CommentType> | null = await commentsRepository.findById(commentId);
+    const commentDB: CommentDBType | null = await commentsRepository.findById(commentId);
 
     /*Если комментарий не был найден, то возвращаем ResultObject с информацией об этом.*/
     if (!commentDB) {
@@ -188,18 +171,9 @@ export const commentsService = {
   /*Метод "deleteManyByPostId()" для удаления комментариев в посте по ID.*/
   async deleteManyByPostId(postId: string): Promise<Result<{ deletedCommentsCount: number } | null>> {
     /*Просим сервис "postsService" найти пост по ID.*/
-    const postDB: Result<{ postOutput: PostOutputDTO } | null> | null = await postsService.findById(postId);
-
+    const postResult: Result<{ postOutput: PostOutputDTO } | null> | null = await postsService.findById(postId);
     /*Если пост не был найден, то возвращаем ResultObject с информацией об этом.*/
-    if (!postDB.data) {
-      return {
-        status: ResultStatuses.NotFound,
-        data: null,
-        errorMessage: 'Not Found',
-        extensions: [{ field: 'postId', message: 'Not Found' }],
-      };
-    }
-
+    if (postResult.status !== ResultStatuses.Ok) return postResult as Result;
     /*Если пост был найден, то просим репозиторий "commentsRepository" удалить комментарии в посте по ID в БД.*/
     const deletedCommentsCount: number = await commentsRepository.deleteManyByPostId(postId);
 
@@ -215,17 +189,8 @@ export const commentsService = {
   async deleteManyByUserId(userId: string): Promise<Result<{ deletedCommentsCount: number } | null>> {
     /*Просим сервис "usersService" найти пользователя по ID.*/
     const userResult: Result<{ userOutput: UserOutputDTO } | null> = await usersService.findById(userId);
-
     /*Если пользователь не был найден, то возвращаем ResultObject с информацией об этом.*/
-    if (!userResult.data) {
-      return {
-        status: ResultStatuses.NotFound,
-        data: null,
-        errorMessage: 'Not Found',
-        extensions: [{ field: 'userId', message: 'Not Found' }],
-      };
-    }
-
+    if (userResult.status !== ResultStatuses.Ok) return userResult as Result;
     /*Если пользователь был найден, то просим репозиторий "commentsRepository" удалить комментарии пользователя по ID в
     БД.*/
     const deletedCommentsCount: number = await commentsRepository.deleteManyByUserId(userId);

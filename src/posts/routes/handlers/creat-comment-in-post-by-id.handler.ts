@@ -8,9 +8,9 @@ import { commentsQueryService } from '../../../comments/application/comments.que
 import { ExtensionType, Result } from '../../../core/types/result/result.type';
 import { CommentOutputDTO } from '../../../comments/routes/output-dto/comment.output-dto';
 
-/*Функция-обработчик "createCommentInPostByIdHandler()" для POST-запросов по добавлению нового комментария в пост по ID,
+/*Функция-обработчик "createCommentInPostHandler()" для POST-запросов по добавлению нового комментария в пост по ID,
 используя URI-параметры.*/
-export const createCommentInPostByIdHandler = async (
+export const createCommentInPostHandler = async (
   req: Request<{ postId: string }, {}, CreateCommentInPostInputDTO>,
   res: Response<CommentOutputDTO | ExtensionType[]>
 ) => {
