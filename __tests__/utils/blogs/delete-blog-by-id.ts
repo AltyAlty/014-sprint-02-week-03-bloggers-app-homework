@@ -9,12 +9,14 @@ export const deleteBlogById = async (
   blogId: string | any,
   expectedStatus?: HttpStatuses,
   basicAuthToken?: string
-): Promise<void> => {
+): Promise<any> => {
   const testStatus = expectedStatus ?? HttpStatuses.NoContent_204;
   const testBasicAuthToken = basicAuthToken ?? generateBasicAuthToken();
 
-  await request(app)
+  const deleteBlogByIdresponse = await request(app)
     .delete(`${SETTINGS.BLOGS_PATH}/${blogId}`)
     .set('Authorization', testBasicAuthToken)
     .expect(testStatus);
+
+  return deleteBlogByIdresponse.body;
 };

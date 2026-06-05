@@ -2,7 +2,7 @@ import 'dotenv/config';
 import express, { Express } from 'express';
 import { setupApp } from './setup-app';
 import { SETTINGS } from './core/settings/settings';
-import { runDB } from './db/mongodb/mongo.db';
+import { db } from './db/mongodb/mongo.db';
 
 /*Функция "bootstrap()" для запуска приложения.*/
 const bootstrap = async () => {
@@ -13,7 +13,7 @@ const bootstrap = async () => {
   /*Указываем порт для экземпляра приложения Express.*/
   const PORT: string | number = SETTINGS.PORT || 5001;
   /*Подключаемся к серверу MongoDB.*/
-  await runDB(SETTINGS.MONGO_URL, SETTINGS.DB_NAME);
+  await db.runDb(SETTINGS.MONGO_URL, SETTINGS.DB_NAME);
   /*Запускаем экземпляр приложения Express.*/
   app.listen(PORT, () => console.log(`Example app listening on port ${PORT}`));
   return app;

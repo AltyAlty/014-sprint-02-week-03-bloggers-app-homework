@@ -11,7 +11,7 @@ import { getAuthDataByTokenHandler } from './handlers/get-auth-data-by-token.han
 import { userCreateInputValidation } from '../../users/validation/user-input-validation.middlewares';
 import { registerUserHandler } from './handlers/register-user.handler';
 import { confirmUserByCodeHandler } from './handlers/confirm-user-by-code.handler';
-import { resendConfirmationEmailHandler } from './handlers/repeat-user-registraion.handler';
+import { resendConfirmationEmailHandler } from './handlers/resend-confirmation-email.handler';
 import { SETTINGS } from '../../core/settings/settings';
 
 /*Роутер из Express для работы с аутентификацией и авторизацией.*/

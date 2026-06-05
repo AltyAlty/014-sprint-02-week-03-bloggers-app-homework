@@ -3,18 +3,17 @@ import { HttpStatuses } from '../../../src/core/types/http-statuses';
 import request from 'supertest';
 import { SETTINGS } from '../../../src/core/settings/settings';
 
-export const deleteCommentById = async (
+export const confirmUserByCode = async (
   app: Express,
-  commentId: string | any,
-  accessToken: string | any,
+  code: string | any,
   expectedStatus?: HttpStatuses
 ): Promise<any> => {
   const testStatus = expectedStatus ?? HttpStatuses.NoContent_204;
 
-  const deleteCommentByIdResponse = await request(app)
-    .delete(`${SETTINGS.COMMENTS_PATH}/${commentId}`)
-    .set('Authorization', `Bearer ${accessToken}`)
+  const confirmUserByCodeResponse = await request(app)
+    .post(`${SETTINGS.AUTH_PATH}${SETTINGS.CONFIRM_USER_BY_CODE_PATH}`)
+    .send({ code })
     .expect(testStatus);
 
-  return deleteCommentByIdResponse.body;
+  return confirmUserByCodeResponse.body;
 };

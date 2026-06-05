@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { blogsCollection, commentsCollection, postsCollection, usersCollection } from '../../../db/mongodb/mongo.db';
+import { db } from '../../../db/mongodb/mongo.db';
 import { HttpStatuses } from '../../../core/types/http-statuses';
 import { errorsHandler } from '../../../core/errors/errors.handler';
 
@@ -7,13 +7,7 @@ import { errorsHandler } from '../../../core/errors/errors.handler';
 export const clearDbHandler = async (req: Request, res: Response) => {
   try {
     /*Очищаем коллекции.*/
-    await Promise.all([
-      blogsCollection.deleteMany(),
-      postsCollection.deleteMany(),
-      commentsCollection.deleteMany(),
-      usersCollection.deleteMany(),
-    ]);
-
+    await db.dropDb();
     /*Сообщаем об очистке БД клиенту.*/
     res.sendStatus(HttpStatuses.NoContent_204);
   } catch (error: unknown) {

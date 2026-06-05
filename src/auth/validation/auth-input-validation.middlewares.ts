@@ -30,17 +30,19 @@ export const confirmationCodeValidation = body('code')
   .withMessage('Field "code" must be a string')
   .notEmpty()
   .withMessage('Field "code" is required')
-  .matches(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i)
+  .matches(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i)
   .withMessage('Field "code" has wrong format')
   .trim()
   .custom(async (code: string) => {
     /*Просим репозиторий "usersRepository" найти пользователя по коду подтверждения в БД. Выкидываем ошибки с
     соответствующей информацией:
-    1. Если пользователь не был найден, что означает, что код некорректный.
-    2. Если регистрация пользователя уже была подтверждена.*/
+    1. Если пользователь не был найден, что означает, что код подтверждения некорректный.
+    2. Если регистрация пользователя уже была подтверждена.
+    3. Если срок действия кода подтверждения истек.*/
     const user: UserDBType | null = await usersRepository.findByConfirmationCode(code);
     if (!user) throw new Error('Field "code" is invalid');
     if (user.emailConfirmation.isConfirmed) throw new Error('Registration has already been confirmed');
+    if (user.emailConfirmation.expirationDate <= new Date()) throw new Error('Confirmation code has expired');
     return true;
   });
 

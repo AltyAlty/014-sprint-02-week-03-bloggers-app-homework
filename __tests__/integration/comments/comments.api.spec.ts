@@ -9,14 +9,15 @@ import { getCommentById } from '../../utils/comments/get-comment-by-id';
 import { updateCommentById } from '../../utils/comments/update-comment-by-id';
 import { UpdateCommentInputDTO } from '../../../src/comments/routes/input-dto/update-comment.input-dto';
 import { HttpStatuses } from '../../../src/core/types/http-statuses';
-import { doBeforeTests } from '../../utils/common/do-before-tests';
+import { doBeforeTests, doBeforeTestsWithMongoMemoryServer } from '../../utils/common/do-before-tests';
 import { CreateUserInputDTO } from '../../../src/users/routes/input-dto/create-user.input-dto';
 import { getCreateUserInputDTO } from '../../utils/users/get-create-user-input-dto';
 import { getUpdateCommentInputDTO } from '../../utils/comments/get-update-comment-input-dto';
 import { deleteCommentById } from '../../utils/comments/delete-comment-by-id';
 
 describe('Comments API', () => {
-  const app = doBeforeTests();
+  // const app = doBeforeTests();
+  const app = doBeforeTestsWithMongoMemoryServer();
 
   it('✅ 001 should return a comment by ID; GET /api/comments/:id', async () => {
     const createdPost: PostOutputDTO = await createPost(app);

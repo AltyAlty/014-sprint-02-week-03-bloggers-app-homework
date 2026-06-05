@@ -1,6 +1,6 @@
 import { Filter, ObjectId } from 'mongodb';
 import { UserType } from '../types/user.type';
-import { usersCollection } from '../../db/mongodb/mongo.db';
+import { db } from '../../db/mongodb/mongo.db';
 import { GetUsersListQueryInputDTO } from '../routes/input-dto/get-users-list-query.input-dto';
 import { SortDirection } from '../../core/types/pagination/sort-direction';
 import { UserSortFieldInputDTO } from '../routes/input-dto/user-sort-field.input-dto';
@@ -11,7 +11,7 @@ export const usersQueryRepository = {
   /*Метод "findById()" для поиска пользователя по ID в БД.*/
   async findById(userId: string): Promise<UserDBType | null> {
     /*Просим коллекцию "usersCollection" найти пользователя по ID в БД.*/
-    const user: UserDBType | null = await usersCollection.findOne({ _id: new ObjectId(userId) });
+    const user: UserDBType | null = await db.usersCollection.findOne({ _id: new ObjectId(userId) });
     /*Если пользователь не был найден, то возвращаем null.*/
     if (!user) return null;
     /*Если пользователь был найден, то возвращаем его.*/
@@ -50,13 +50,13 @@ export const usersQueryRepository = {
     /*Просим коллекцию "usersCollection" найти пользователей по ID в БД и подсчитать общее количество документов,
     подходящих под фильтр, без учета пагинации.*/
     const [items, totalCount]: [UserDBType[], number] = await Promise.all([
-      usersCollection
+      db.usersCollection
         .find(filter)
         .sort({ [sortBy]: sortDirection })
         .skip(skip)
         .limit(pageSize)
         .toArray(),
-      usersCollection.countDocuments(filter),
+      db.usersCollection.countDocuments(filter),
     ]);
 
     /*Возвращаем данные по пользователям.*/

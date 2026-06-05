@@ -13,7 +13,7 @@ import { getBlogsList } from '../../utils/blogs/get-blogs-list';
 import { getPostsListByBlogId } from '../../utils/blogs/get-posts-list-by-blog-id';
 import { deleteBlogById } from '../../utils/blogs/delete-blog-by-id';
 import { createPostInBlog } from '../../utils/blogs/create-post-in-blog';
-import { doBeforeTests } from '../../utils/common/do-before-tests';
+import { doBeforeTests, doBeforeTestsWithMongoMemoryServer } from '../../utils/common/do-before-tests';
 import { createPost } from '../../utils/posts/create-post';
 import { CreateUserInputDTO } from '../../../src/users/routes/input-dto/create-user.input-dto';
 import { getCreateUserInputDTO } from '../../utils/users/get-create-user-input-dto';
@@ -27,7 +27,8 @@ import { getCommentById } from '../../utils/comments/get-comment-by-id';
 /*Тестовый набор.*/
 describe('Blogs API', () => {
   /*Делаем предварительные действия и получаем настроенный экземпляр приложения Express.*/
-  const app = doBeforeTests();
+  // const app = doBeforeTests();
+  const app = doBeforeTestsWithMongoMemoryServer();
 
   /*Тесты.*/
   it('✅ 001 should create a blog; POST /api/blogs', async () => {

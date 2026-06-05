@@ -42,8 +42,8 @@ export const SETTINGS = {
   TESTING_PATH: '/api/testing',
   CLEAR_DB_PATH: '/all-data',
 
-  DB_NAME: process.env.DB_NAME || '012-s-02-w-03-bloggers-app-hw',
-  TEST_DB_NAME: process.env.DB_NAME || '012-s-02-w-03-bloggers-app-hw-test',
+  DB_NAME: process.env.DB_NAME || '014-s-02-w-03-bloggers-app-hw',
+  TEST_DB_NAME: process.env.DB_NAME || '014-s-02-w-03-bloggers-app-hw-test',
 
   BLOGS_COLLECTION_NAME: 'blogs',
   POSTS_COLLECTION_NAME: 'posts',

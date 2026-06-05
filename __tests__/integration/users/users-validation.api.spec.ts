@@ -4,13 +4,14 @@ import { HttpStatuses } from '../../../src/core/types/http-statuses';
 import { createUser } from '../../utils/users/create-user';
 import { CreateUserInputDTO } from '../../../src/users/routes/input-dto/create-user.input-dto';
 import { UserOutputDTO } from '../../../src/users/routes/output-dto/user.output-dto';
-import { doBeforeTests } from '../../utils/common/do-before-tests';
+import { doBeforeTests, doBeforeTestsWithMongoMemoryServer } from '../../utils/common/do-before-tests';
 import { PaginatedUsersListOutputDTO } from '../../../src/users/routes/output-dto/paginated-users-list.output-dto';
 import { getUsersList } from '../../utils/users/get-users-list';
 import { deleteUserById } from '../../utils/users/delete-user-by-id';
 
 describe('Users API validation', () => {
-  const app = doBeforeTests();
+  // const app = doBeforeTests();
+  const app = doBeforeTestsWithMongoMemoryServer();
 
   it('❌ 001 should not return a list of users without proper basic authorization; GET /api/users', async () => {
     await Promise.all([createUser(app), createUser(app)]);
@@ -57,18 +58,29 @@ describe('Users API validation', () => {
 
     const testStatus: HttpStatuses = HttpStatuses.BadRequest_400;
 
-    await getUsersList(app, incorrectUrl_01, testStatus);
-    await getUsersList(app, incorrectUrl_02, testStatus);
-    await getUsersList(app, incorrectUrl_03, testStatus);
-    await getUsersList(app, incorrectUrl_04, testStatus);
-    const getUsersListResponse: PaginatedUsersListOutputDTO = await getUsersList(app, correctUrl);
+    const getUsersListResponse_01: any = await getUsersList(app, incorrectUrl_01, testStatus);
+    const getUsersListResponse_02: any = await getUsersList(app, incorrectUrl_02, testStatus);
+    const getUsersListResponse_03: any = await getUsersList(app, incorrectUrl_03, testStatus);
+    const getUsersListResponse_04: any = await getUsersList(app, incorrectUrl_04, testStatus);
+    const getUsersListResponse_05: PaginatedUsersListOutputDTO = await getUsersList(app, correctUrl);
 
-    expect(getUsersListResponse.items).toBeInstanceOf(Array);
-    expect(getUsersListResponse.items.length).toBe(3);
-    expect(getUsersListResponse.totalCount).toBe(3);
-    expect(getUsersListResponse.items[0].login).toBe(userData_06.login);
-    expect(getUsersListResponse.items[1].login).toBe(userData_04.login);
-    expect(getUsersListResponse.items[2].login).toBe(userData_03.login);
+    expect(getUsersListResponse_05.items).toBeInstanceOf(Array);
+    expect(getUsersListResponse_05.items.length).toBe(3);
+    expect(getUsersListResponse_05.totalCount).toBe(3);
+    expect(getUsersListResponse_05.items[0].login).toBe(userData_06.login);
+    expect(getUsersListResponse_05.items[1].login).toBe(userData_04.login);
+    expect(getUsersListResponse_05.items[2].login).toBe(userData_03.login);
+    expect(getUsersListResponse_01.errorsMessages[0].field).toBe('pageSize');
+    expect(getUsersListResponse_01.errorsMessages[0].message).toBe('Page size must be between 1 and 100');
+    expect(getUsersListResponse_02.errorsMessages[0].field).toBe('pageNumber');
+    expect(getUsersListResponse_02.errorsMessages[0].message).toBe('Page number must be a positive integer');
+    expect(getUsersListResponse_03.errorsMessages[0].field).toBe('sortDirection');
+    expect(getUsersListResponse_03.errorsMessages[0].message).toBe('Sort direction must be one of: asc, desc');
+    expect(getUsersListResponse_04.errorsMessages[0].field).toBe('sortBy');
+
+    expect(getUsersListResponse_04.errorsMessages[0].message).toBe(
+      'Invalid sort field. Allowed values: createdAt, login, email'
+    );
   });
 
   it('❌ 003 should not create a user without proper basic authorization; POST /api/users', async () => {
@@ -100,28 +112,66 @@ describe('Users API validation', () => {
     const incorrectEmail_05: null = null;
     const testStatus: HttpStatuses = HttpStatuses.BadRequest_400;
 
-    await createUser(app, { login: incorrectLogin_01 }, testStatus);
-    await createUser(app, { login: incorrectLogin_02 }, testStatus);
-    await createUser(app, { login: incorrectLogin_03 }, testStatus);
-    await createUser(app, { login: incorrectLogin_04 }, testStatus);
-    await createUser(app, { login: incorrectLogin_05 }, testStatus);
-    await createUser(app, { login: incorrectLogin_06 }, testStatus);
-    await createUser(app, { password: incorrectPassword_01 }, testStatus);
-    await createUser(app, { password: incorrectPassword_02 }, testStatus);
-    await createUser(app, { password: incorrectPassword_03 }, testStatus);
-    await createUser(app, { password: incorrectPassword_04 }, testStatus);
-    await createUser(app, { password: incorrectPassword_05 }, testStatus);
-    await createUser(app, { password: incorrectPassword_06 }, testStatus);
-    await createUser(app, { email: incorrectEmail_01 }, testStatus);
-    await createUser(app, { email: incorrectEmail_02 }, testStatus);
-    await createUser(app, { email: incorrectEmail_03 }, testStatus);
-    await createUser(app, { email: incorrectEmail_04 }, testStatus);
-    await createUser(app, { email: incorrectEmail_05 }, testStatus);
+    const createUserResponse_01: any = await createUser(app, { login: incorrectLogin_01 }, testStatus);
+    const createUserResponse_02: any = await createUser(app, { login: incorrectLogin_02 }, testStatus);
+    const createUserResponse_03: any = await createUser(app, { login: incorrectLogin_03 }, testStatus);
+    const createUserResponse_04: any = await createUser(app, { login: incorrectLogin_04 }, testStatus);
+    const createUserResponse_05: any = await createUser(app, { login: incorrectLogin_05 }, testStatus);
+    const createUserResponse_06: any = await createUser(app, { login: incorrectLogin_06 }, testStatus);
+    const createUserResponse_07: any = await createUser(app, { password: incorrectPassword_01 }, testStatus);
+    const createUserResponse_08: any = await createUser(app, { password: incorrectPassword_02 }, testStatus);
+    const createUserResponse_09: any = await createUser(app, { password: incorrectPassword_03 }, testStatus);
+    const createUserResponse_10: any = await createUser(app, { password: incorrectPassword_04 }, testStatus);
+    const createUserResponse_11: any = await createUser(app, { password: incorrectPassword_05 }, testStatus);
+    const createUserResponse_12: any = await createUser(app, { password: incorrectPassword_06 }, testStatus);
+    const createUserResponse_13: any = await createUser(app, { email: incorrectEmail_01 }, testStatus);
+    const createUserResponse_14: any = await createUser(app, { email: incorrectEmail_02 }, testStatus);
+    const createUserResponse_15: any = await createUser(app, { email: incorrectEmail_03 }, testStatus);
+    const createUserResponse_16: any = await createUser(app, { email: incorrectEmail_04 }, testStatus);
+    const createUserResponse_17: any = await createUser(app, { email: incorrectEmail_05 }, testStatus);
     const getUsersListResponse: PaginatedUsersListOutputDTO = await getUsersList(app);
 
     expect(getUsersListResponse.items).toBeInstanceOf(Array);
     expect(getUsersListResponse.items.length).toBe(0);
     expect(getUsersListResponse.totalCount).toBe(0);
+    expect(createUserResponse_01.errorsMessages[0].field).toBe('login');
+    expect(createUserResponse_01.errorsMessages[0].message).toBe('Field "login" is too short or too long');
+    expect(createUserResponse_02.errorsMessages[0].field).toBe('login');
+    expect(createUserResponse_02.errorsMessages[0].message).toBe('Field "login" is too short or too long');
+    expect(createUserResponse_03.errorsMessages[0].field).toBe('login');
+    expect(createUserResponse_03.errorsMessages[0].message).toBe('Field "login" is too short or too long');
+    expect(createUserResponse_04.errorsMessages[0].field).toBe('login');
+
+    expect(createUserResponse_04.errorsMessages[0].message).toBe(
+      'Field "login" can only contain letters, numbers, underscores and hyphens'
+    );
+
+    expect(createUserResponse_05.errorsMessages[0].field).toBe('login');
+    expect(createUserResponse_05.errorsMessages[0].message).toBe('Field "login" is too short or too long');
+    expect(createUserResponse_06.errorsMessages[0].field).toBe('login');
+    expect(createUserResponse_06.errorsMessages[0].message).toBe('Field "login" must be a string');
+    expect(createUserResponse_07.errorsMessages[0].field).toBe('password');
+    expect(createUserResponse_07.errorsMessages[0].message).toBe('Field "password" is too short or too long');
+    expect(createUserResponse_08.errorsMessages[0].field).toBe('password');
+    expect(createUserResponse_08.errorsMessages[0].message).toBe('Field "password" is too short or too long');
+    expect(createUserResponse_09.errorsMessages[0].field).toBe('password');
+    expect(createUserResponse_09.errorsMessages[0].message).toBe('Field "password" is too short or too long');
+    expect(createUserResponse_10.errorsMessages[0].field).toBe('password');
+    expect(createUserResponse_10.errorsMessages[0].message).toBe('Field "password" is too short or too long');
+    expect(createUserResponse_11.errorsMessages[0].field).toBe('password');
+    expect(createUserResponse_11.errorsMessages[0].message).toBe('Field "password" is too short or too long');
+    expect(createUserResponse_12.errorsMessages[0].field).toBe('password');
+    expect(createUserResponse_12.errorsMessages[0].message).toBe('Field "password" must be a string');
+    expect(createUserResponse_13.errorsMessages[0].field).toBe('email');
+    expect(createUserResponse_13.errorsMessages[0].message).toBe('Field "email" has wrong format');
+    expect(createUserResponse_14.errorsMessages[0].field).toBe('email');
+    expect(createUserResponse_14.errorsMessages[0].message).toBe('Field "email" has wrong format');
+    expect(createUserResponse_15.errorsMessages[0].field).toBe('email');
+    expect(createUserResponse_15.errorsMessages[0].message).toBe('Field "email" has wrong format');
+    expect(createUserResponse_16.errorsMessages[0].field).toBe('email');
+    expect(createUserResponse_16.errorsMessages[0].message).toBe('Field "email" has wrong format');
+    expect(createUserResponse_17.errorsMessages[0].field).toBe('email');
+    expect(createUserResponse_17.errorsMessages[0].message).toBe('Field "email" must be a string');
   });
 
   it('❌ 005 should not create a user when non-unique login/email passed; POST /api/users', async () => {
@@ -136,14 +186,18 @@ describe('Users API validation', () => {
     const createdUser: UserOutputDTO = await createUser(app, correctCreateUserData);
     const testStatus: HttpStatuses = HttpStatuses.BadRequest_400;
 
-    await createUser(app, incorrectCreateUserData_01, testStatus);
-    await createUser(app, incorrectCreateUserData_02, testStatus);
+    const createUserResponse_01: any = await createUser(app, incorrectCreateUserData_01, testStatus);
+    const createUserResponse_02: any = await createUser(app, incorrectCreateUserData_02, testStatus);
     const getUsersListResponse: PaginatedUsersListOutputDTO = await getUsersList(app);
 
     expect(getUsersListResponse.items).toBeInstanceOf(Array);
     expect(getUsersListResponse.items.length).toBe(1);
     expect(getUsersListResponse.totalCount).toBe(1);
     expect(getUsersListResponse.items[0]).toEqual(createdUser);
+    expect(createUserResponse_01.errorsMessages[0].field).toBe('login');
+    expect(createUserResponse_01.errorsMessages[0].message).toBe('Field "login" must be unique');
+    expect(createUserResponse_02.errorsMessages[0].field).toBe('email');
+    expect(createUserResponse_02.errorsMessages[0].message).toBe('Field "email" must be unique');
   });
 
   it('❌ 006 should not delete a user by ID without proper basic authorization; DELETE /api/users/:id', async () => {
@@ -166,14 +220,20 @@ describe('Users API validation', () => {
     const createdUser: UserOutputDTO = await createUser(app);
     const testStatus: HttpStatuses = HttpStatuses.BadRequest_400;
 
-    await deleteUserById(app, incorrectUserId_01, testStatus);
-    await deleteUserById(app, incorrectUserId_02, testStatus);
-    await deleteUserById(app, incorrectUserId_03, testStatus);
+    const deleteUserByIdResponse_01: any = await deleteUserById(app, incorrectUserId_01, testStatus);
+    const deleteUserByIdResponse_02: any = await deleteUserById(app, incorrectUserId_02, testStatus);
+    const deleteUserByIdResponse_03: any = await deleteUserById(app, incorrectUserId_03, testStatus);
     const getUsersListResponse: PaginatedUsersListOutputDTO = await getUsersList(app);
 
     expect(getUsersListResponse.items).toBeInstanceOf(Array);
     expect(getUsersListResponse.items.length).toBe(1);
     expect(getUsersListResponse.totalCount).toBe(1);
     expect(getUsersListResponse.items[0]).toEqual(createdUser);
+    expect(deleteUserByIdResponse_01.errorsMessages[0].field).toBe('id');
+    expect(deleteUserByIdResponse_01.errorsMessages[0].message).toBe('Field "id" has incorrect format of ObjectId');
+    expect(deleteUserByIdResponse_02.errorsMessages[0].field).toBe('id');
+    expect(deleteUserByIdResponse_03.errorsMessages[0].message).toBe('Field "id" has incorrect format of ObjectId');
+    expect(deleteUserByIdResponse_03.errorsMessages[0].field).toBe('id');
+    expect(deleteUserByIdResponse_03.errorsMessages[0].message).toBe('Field "id" has incorrect format of ObjectId');
   });
 });

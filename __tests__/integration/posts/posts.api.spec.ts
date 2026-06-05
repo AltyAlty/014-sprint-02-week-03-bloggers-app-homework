@@ -12,7 +12,7 @@ import { createCommentInPost } from '../../utils/posts/create-comment-in-post';
 import { CommentOutputDTO } from '../../../src/comments/routes/output-dto/comment.output-dto';
 import { createUser } from '../../utils/users/create-user';
 import { getPostsList } from '../../utils/posts/get-posts-list';
-import { doBeforeTests } from '../../utils/common/do-before-tests';
+import { doBeforeTests, doBeforeTestsWithMongoMemoryServer } from '../../utils/common/do-before-tests';
 import { PaginatedPostsListOutputDTO } from '../../../src/posts/routes/output-dto/paginated-posts-list.output-dto';
 import { deletePostById } from '../../utils/posts/delete-post-by-id';
 import { getCreateUserInputDTO } from '../../utils/users/get-create-user-input-dto';
@@ -22,7 +22,8 @@ import { getCommentsListByPostId } from '../../utils/posts/get-comments-list-by-
 import { PaginatedCommentsListOutputDTO } from '../../../src/comments/routes/output-dto/paginated-comments-list.output-dto';
 
 describe('Posts API', () => {
-  const app = doBeforeTests();
+  // const app = doBeforeTests();
+  const app = doBeforeTestsWithMongoMemoryServer();
 
   it('✅ 001 should create a post; POST /api/posts', async () => {
     const createdPost: PostOutputDTO = await createPost(app);

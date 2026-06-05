@@ -12,7 +12,7 @@ export const updateBlogById = async (
   blogDTO?: UpdateBlogInputDTO | any,
   expectedStatus?: HttpStatuses,
   basicAuthToken?: string
-): Promise<void> => {
+): Promise<any> => {
   const testUpdateBlogData: UpdateBlogInputDTO = { ...getUpdateBlogInputDTO(), ...blogDTO };
   const testStatus = expectedStatus ?? HttpStatuses.NoContent_204;
   const testBasicAuthToken = basicAuthToken ?? generateBasicAuthToken();

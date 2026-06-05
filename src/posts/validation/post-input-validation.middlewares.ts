@@ -7,7 +7,8 @@ export const titleValidation = body('title')
   .isString()
   .withMessage('Field "title" must be a string')
   .trim()
-  .isLength({ min: 1, max: 30 });
+  .isLength({ min: 1, max: 30 })
+  .withMessage('Field "title" is too short or too long');
 
 /*Middleware "shortDescriptionValidation" проверяет, что поле "shortDescription":
 1. Является строкой.
@@ -16,7 +17,8 @@ export const shortDescriptionValidation = body('shortDescription')
   .isString()
   .withMessage('Field "shortDescription" must be a string')
   .trim()
-  .isLength({ min: 1, max: 100 });
+  .isLength({ min: 1, max: 100 })
+  .withMessage('Field "shortDescription" is too short or too long');
 
 /*Middleware "contentValidation" проверяет, что поле "content":
 1. Является строкой.
@@ -25,7 +27,8 @@ export const contentValidation = body('content')
   .isString()
   .withMessage('Field "content" must be a string')
   .trim()
-  .isLength({ min: 1, max: 1000 });
+  .isLength({ min: 1, max: 1000 })
+  .withMessage('Field "content" is too short or too long');
 
 /*Middleware "blogIdValidation" проверяет, что поле "blogId":
 1. Является строкой.
@@ -34,7 +37,8 @@ export const blogIdValidation = body('blogId')
   .isString()
   .withMessage('Field "blogId" must be a string')
   .trim()
-  .isLength({ min: 1 });
+  .isLength({ min: 1 })
+  .withMessage('Field "blogId" is too short');
 
 /*Комбинируем вышеуказанные middlewares в один middleware "postCreateInputValidation", чтобы использовать его для
 проверки запросов по созданию поста.*/

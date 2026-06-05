@@ -1,6 +1,6 @@
 import { Filter, ObjectId } from 'mongodb';
 import { PostType } from '../types/post.type';
-import { postsCollection } from '../../db/mongodb/mongo.db';
+import { db } from '../../db/mongodb/mongo.db';
 import { GetPostsListQueryInputDTO } from '../routes/input-dto/get-posts-list-query.input-dto';
 import { SortDirection } from '../../core/types/pagination/sort-direction';
 import { PostSortFieldInputDTO } from '../routes/input-dto/post-sort-field.input-dto';
@@ -11,7 +11,7 @@ export const postsQueryRepository = {
   /*Метод "findById()" для поиска поста по ID в БД.*/
   async findById(postId: string): Promise<PostDBType | null> {
     /*Просим коллекцию "postsCollection" найти пост по ID в БД.*/
-    const result: PostDBType | null = await postsCollection.findOne({ _id: new ObjectId(postId) });
+    const result: PostDBType | null = await db.postsCollection.findOne({ _id: new ObjectId(postId) });
     /*Если пост не был найден, то возвращаем null.*/
     if (!result) return null;
     /*Если пост был найден, то возвращаем его.*/
@@ -47,13 +47,13 @@ export const postsQueryRepository = {
     /*Просим коллекцию "postsCollection" найти посты в БД и подсчитать общее количество документов, подходящих под
     фильтр, без учета пагинации.*/
     const [items, totalCount]: [PostDBType[], number] = await Promise.all([
-      postsCollection
+      db.postsCollection
         .find(filter)
         .sort({ [sortBy]: sortDirection })
         .skip(skip)
         .limit(pageSize)
         .toArray(),
-      postsCollection.countDocuments(filter),
+      db.postsCollection.countDocuments(filter),
     ]);
 
     /*Возвращаем данные по постам.*/

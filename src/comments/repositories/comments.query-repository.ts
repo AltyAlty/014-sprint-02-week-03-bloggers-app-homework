@@ -1,6 +1,6 @@
 import { Filter, ObjectId } from 'mongodb';
 import { CommentType } from '../types/comment.type';
-import { commentsCollection } from '../../db/mongodb/mongo.db';
+import { db } from '../../db/mongodb/mongo.db';
 import { GetCommentsListInPostQueryInputDTO } from '../routes/input-dto/get-comments-list-in-post-query.input-dto';
 import { SortDirection } from '../../core/types/pagination/sort-direction';
 import { CommentSortFieldInputDTO } from '../routes/input-dto/comment-sort-field.input-dto';
@@ -11,7 +11,7 @@ export const commentsQueryRepository = {
   /*Метод "findById()" для поиска комментария по ID в БД.*/
   async findById(commentId: string): Promise<CommentDBType | null> {
     /*Просим коллекцию "commentsCollection" найти комментарий по ID в БД.*/
-    const comment: CommentDBType | null = await commentsCollection.findOne({ _id: new ObjectId(commentId) });
+    const comment: CommentDBType | null = await db.commentsCollection.findOne({ _id: new ObjectId(commentId) });
     /*Если комментарий не был найден, то возвращаем null.*/
     if (!comment) return null;
     /*Если комментарий был найден, то возвращаем его.*/
@@ -47,13 +47,13 @@ export const commentsQueryRepository = {
     /*Просим коллекцию "commentsCollection" найти комментарии в посте по ID в БД и подсчитать общее количество
     документов, подходящих под фильтр, без учета пагинации.*/
     const [items, totalCount]: [CommentDBType[], number] = await Promise.all([
-      commentsCollection
+      db.commentsCollection
         .find(filter)
         .sort({ [sortBy]: sortDirection })
         .skip(skip)
         .limit(pageSize)
         .toArray(),
-      commentsCollection.countDocuments(filter),
+      db.commentsCollection.countDocuments(filter),
     ]);
 
     /*Возвращаем данные по комментариям.*/

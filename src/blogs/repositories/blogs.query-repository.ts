@@ -1,7 +1,7 @@
 import { GetBlogsListQueryInputDTO } from '../routes/input-dto/get-blogs-list-query.input-dto';
 import { Filter, ObjectId } from 'mongodb';
 import { BlogType } from '../types/blog.type';
-import { blogsCollection } from '../../db/mongodb/mongo.db';
+import { db } from '../../db/mongodb/mongo.db';
 import { BlogSortFieldInputDTO } from '../routes/input-dto/blog-sort-field.input-dto';
 import { SortDirection } from '../../core/types/pagination/sort-direction';
 import { BlogDBType } from '../../db/types/blog-db.type';
@@ -11,7 +11,7 @@ export const blogsQueryRepository = {
   /*Метод "findById()" для поиска блога по ID в БД.*/
   async findById(blogId: string): Promise<BlogDBType | null> {
     /*Просим коллекцию "blogsCollection" найти блог по ID в БД.*/
-    const blog: BlogDBType | null = await blogsCollection.findOne({ _id: new ObjectId(blogId) });
+    const blog: BlogDBType | null = await db.blogsCollection.findOne({ _id: new ObjectId(blogId) });
     /*Если блог не был найден, то возвращаем null.*/
     if (!blog) return null;
     /*Если блог был найден, то возвращаем его.*/
@@ -53,7 +53,7 @@ export const blogsQueryRepository = {
     4. ".limit(pageSize)": берем записей не больше размера запрошенной страницы.
     5. ".toArray()": превращаем курсор в обычный массив и возвращаем его.*/
     const [items, totalCount]: [BlogDBType[], number] = await Promise.all([
-      blogsCollection
+      db.blogsCollection
         .find(filter)
         .sort({ [sortBy]: sortDirection })
         .skip(skip)
@@ -61,7 +61,7 @@ export const blogsQueryRepository = {
         .toArray(),
       /*Просим коллекцию "blogsCollection" подсчитать общее количество документов, подходящих под фильтр, без учета
       пагинации.*/
-      blogsCollection.countDocuments(filter),
+      db.blogsCollection.countDocuments(filter),
     ]);
 
     /*Возвращаем данные по блогам.*/

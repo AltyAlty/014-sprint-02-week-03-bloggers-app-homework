@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { SETTINGS } from '../../../src/core/settings/settings';
 import { UserOutputDTO } from '../../../src/users/routes/output-dto/user.output-dto';
 import { createUser } from '../../utils/users/create-user';
-import { doBeforeTests } from '../../utils/common/do-before-tests';
+import { doBeforeTests, doBeforeTestsWithMongoMemoryServer } from '../../utils/common/do-before-tests';
 import { getUsersList } from '../../utils/users/get-users-list';
 import { PaginatedUsersListOutputDTO } from '../../../src/users/routes/output-dto/paginated-users-list.output-dto';
 import { deleteUserById } from '../../utils/users/delete-user-by-id';
@@ -19,7 +19,8 @@ import { getCommentsListByPostId } from '../../utils/posts/get-comments-list-by-
 import { getCommentById } from '../../utils/comments/get-comment-by-id';
 
 describe('Users API', () => {
-  const app = doBeforeTests();
+  // const app = doBeforeTests();
+  const app = doBeforeTestsWithMongoMemoryServer();
 
   it('✅ 001 should create a user; POST /api/users', async () => {
     const createdUser: UserOutputDTO = await createUser(app);

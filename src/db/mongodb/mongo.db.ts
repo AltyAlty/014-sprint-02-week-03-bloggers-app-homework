@@ -5,37 +5,62 @@ import { PostType } from '../../posts/types/post.type';
 import { UserType } from '../../users/types/user.type';
 import { CommentType } from '../../comments/types/comment.type';
 
-export let client: MongoClient;
-export let blogsCollection: Collection<BlogType>;
-export let postsCollection: Collection<PostType>;
-export let commentsCollection: Collection<CommentType>;
-export let usersCollection: Collection<UserType>;
+/*Объект для работы с MongoDB.*/
+export const db = {
+  /*Клиент для MongoDB.*/
+  client: {} as MongoClient,
 
-/*Функция "runDB()" для подключения к серверу MongoDB.*/
-export const runDB = async (url: string, dbName: string): Promise<void> => {
-  /*Создаем клиента для MongoDB.*/
-  client = new MongoClient(url);
-  /*Указываем БД, к которой будет подключаться клиент для MongoDB.*/
-  const db: Db = client.db(dbName);
-  /*Создаем коллекции в указанной БД.*/
-  blogsCollection = db.collection<BlogType>(SETTINGS.BLOGS_COLLECTION_NAME);
-  postsCollection = db.collection<PostType>(SETTINGS.POSTS_COLLECTION_NAME);
-  commentsCollection = db.collection<CommentType>(SETTINGS.COMMENTS_COLLECTION_NAME);
-  usersCollection = db.collection<UserType>(SETTINGS.USERS_COLLECTION_NAME);
+  /*БД для подключения клиента для MongoDB.*/
+  db: {} as Db,
 
-  try {
-    /*Присоединяем клиента для MongoDB к серверу и проверяем соединение.*/
-    await client.connect();
-    await db.command({ ping: 1 });
-    console.log('✅ Successfully connected to the MongoDB server');
-  } catch (error) {
-    await client.close();
-    throw new Error(`❌ Cannot connect to the MongoDB server: ${error}`);
-  }
-};
+  /*Коллекции.*/
+  blogsCollection: {} as Collection<BlogType>,
+  postsCollection: {} as Collection<PostType>,
+  commentsCollection: {} as Collection<CommentType>,
+  usersCollection: {} as Collection<UserType>,
 
-/*Функция "stopDb()" для отключения от сервера MongoDB.*/
-export const stopDb = async () => {
-  if (!client) throw new Error(`❌ No MongoDB clients`);
-  await client.close();
+  /*Метод "runDB()" для подключения к серверу MongoDB.*/
+  async runDb(url: string, dbName: string) {
+    try {
+      /*Создаем клиент для MongoDB.*/
+      this.client = new MongoClient(url);
+      /*Указываем БД, к которой будет подключаться клиент для MongoDB.*/
+      this.db = this.client.db(dbName);
+      /*Создаем коллекции в указанной БД.*/
+      this.blogsCollection = this.db.collection<BlogType>(SETTINGS.BLOGS_COLLECTION_NAME);
+      this.postsCollection = this.db.collection<PostType>(SETTINGS.POSTS_COLLECTION_NAME);
+      this.commentsCollection = this.db.collection<CommentType>(SETTINGS.COMMENTS_COLLECTION_NAME);
+      this.usersCollection = this.db.collection<UserType>(SETTINGS.USERS_COLLECTION_NAME);
+      /*Присоединяем клиента для MongoDB к серверу и проверяем соединение.*/
+      await this.client.connect();
+      await this.db.command({ ping: 1 });
+      console.log('✅ Successfully connected to a MongoDB server');
+    } catch (error: unknown) {
+      await this.client.close();
+      throw new Error(`❌ Cannot connect to a MongoDB server: ${error}`);
+    }
+  },
+
+  /*Метод "stopDb()" для отключения от сервера MongoDB.*/
+  async stopDb() {
+    if (!this.client) throw new Error(`❌ No MongoDB clients`);
+    await this.client.close();
+    console.log('✅ Connection successfully closed');
+  },
+
+  /*Метод "dropDb()" для очистки коллекций в БД.*/
+  async dropDb() {
+    try {
+      /*Очищаем коллекции.*/
+      await Promise.all([
+        this.blogsCollection.deleteMany(),
+        this.postsCollection.deleteMany(),
+        this.commentsCollection.deleteMany(),
+        this.usersCollection.deleteMany(),
+      ]);
+    } catch (error: unknown) {
+      console.error(`❌ Error while dropping DB: ${error}`);
+      await this.stopDb();
+    }
+  },
 };

@@ -10,13 +10,14 @@ import { HttpStatuses } from '../../../src/core/types/http-statuses';
 import { UpdateCommentInputDTO } from '../../../src/comments/routes/input-dto/update-comment.input-dto';
 import { updateCommentById } from '../../utils/comments/update-comment-by-id';
 import { getUpdateCommentInputDTO } from '../../utils/comments/get-update-comment-input-dto';
-import { doBeforeTests } from '../../utils/common/do-before-tests';
+import { doBeforeTests, doBeforeTestsWithMongoMemoryServer } from '../../utils/common/do-before-tests';
 import { CreateUserInputDTO } from '../../../src/users/routes/input-dto/create-user.input-dto';
 import { getCreateUserInputDTO } from '../../utils/users/get-create-user-input-dto';
 import { deleteCommentById } from '../../utils/comments/delete-comment-by-id';
 
 describe('Comments API', () => {
-  const app = doBeforeTests();
+  // const app = doBeforeTests();
+  const app = doBeforeTestsWithMongoMemoryServer();
 
   it("❌ 001 should not return a comment by incorrect ID; GET /api/comments/:id'", async () => {
     const incorrectCommentId_01: string = 'ABC';
@@ -36,12 +37,18 @@ describe('Comments API', () => {
     const createdCommentId: string = createdComment.id;
     const testStatus: HttpStatuses = HttpStatuses.BadRequest_400;
 
-    await getCommentById(app, incorrectCommentId_01, testStatus);
-    await getCommentById(app, incorrectCommentId_02, testStatus);
-    await getCommentById(app, incorrectCommentId_03, testStatus);
-    const getCommentByIdResponse: CommentOutputDTO = await getCommentById(app, createdCommentId);
+    const getCommentByIdResponse_01: any = await getCommentById(app, incorrectCommentId_01, testStatus);
+    const getCommentByIdResponse_02: any = await getCommentById(app, incorrectCommentId_02, testStatus);
+    const getCommentByIdResponse_03: any = await getCommentById(app, incorrectCommentId_03, testStatus);
+    const getCommentByIdResponse_04: CommentOutputDTO = await getCommentById(app, createdCommentId);
 
-    expect(getCommentByIdResponse).toEqual(createdComment);
+    expect(getCommentByIdResponse_04).toEqual(createdComment);
+    expect(getCommentByIdResponse_01.errorsMessages[0].field).toBe('id');
+    expect(getCommentByIdResponse_01.errorsMessages[0].message).toBe('Field "id" has incorrect format of ObjectId');
+    expect(getCommentByIdResponse_02.errorsMessages[0].field).toBe('id');
+    expect(getCommentByIdResponse_03.errorsMessages[0].message).toBe('Field "id" has incorrect format of ObjectId');
+    expect(getCommentByIdResponse_03.errorsMessages[0].field).toBe('id');
+    expect(getCommentByIdResponse_03.errorsMessages[0].message).toBe('Field "id" has incorrect format of ObjectId');
   });
 
   it('❌ 002 should not update a comment by ID without proper access token; PUT /api/comments/:id', async () => {
@@ -100,12 +107,39 @@ describe('Comments API', () => {
     const createdCommentId: string = createdComment.id;
     const testStatus: HttpStatuses = HttpStatuses.BadRequest_400;
 
-    await updateCommentById(app, incorrectCommentId_01, accessToken, updateCommentData, testStatus);
-    await updateCommentById(app, incorrectCommentId_02, accessToken, updateCommentData, testStatus);
-    await updateCommentById(app, incorrectCommentId_03, accessToken, updateCommentData, testStatus);
+    const updateCommentByIdResponse_01: any = await updateCommentById(
+      app,
+      incorrectCommentId_01,
+      accessToken,
+      updateCommentData,
+      testStatus
+    );
+
+    const updateCommentByIdResponse_02: any = await updateCommentById(
+      app,
+      incorrectCommentId_02,
+      accessToken,
+      updateCommentData,
+      testStatus
+    );
+
+    const updateCommentByIdResponse_03: any = await updateCommentById(
+      app,
+      incorrectCommentId_03,
+      accessToken,
+      updateCommentData,
+      testStatus
+    );
+
     const getCommentByIdResponse: CommentOutputDTO = await getCommentById(app, createdCommentId);
 
     expect(getCommentByIdResponse).toEqual(createdComment);
+    expect(updateCommentByIdResponse_01.errorsMessages[0].field).toBe('id');
+    expect(updateCommentByIdResponse_01.errorsMessages[0].message).toBe('Field "id" has incorrect format of ObjectId');
+    expect(updateCommentByIdResponse_02.errorsMessages[0].field).toBe('id');
+    expect(updateCommentByIdResponse_03.errorsMessages[0].message).toBe('Field "id" has incorrect format of ObjectId');
+    expect(updateCommentByIdResponse_03.errorsMessages[0].field).toBe('id');
+    expect(updateCommentByIdResponse_03.errorsMessages[0].message).toBe('Field "id" has incorrect format of ObjectId');
   });
 
   it('❌ 004 should not update a comment by ID when incorrect body passed; PUT /api/comments/:id', async () => {
@@ -133,19 +167,109 @@ describe('Comments API', () => {
     const createdCommentId: string = createdComment.id;
     const testStatus: HttpStatuses = HttpStatuses.BadRequest_400;
 
-    await updateCommentById(app, createdCommentId, accessToken, incorrectUpdateCommentData_01, testStatus);
-    await updateCommentById(app, createdCommentId, accessToken, incorrectUpdateCommentData_02, testStatus);
-    await updateCommentById(app, createdCommentId, accessToken, incorrectUpdateCommentData_03, testStatus);
-    await updateCommentById(app, createdCommentId, accessToken, incorrectUpdateCommentData_04, testStatus);
-    await updateCommentById(app, createdCommentId, accessToken, incorrectUpdateCommentData_05, testStatus);
-    await updateCommentById(app, createdCommentId, accessToken, incorrectUpdateCommentData_06, testStatus);
-    await updateCommentById(app, createdCommentId, accessToken, incorrectUpdateCommentData_07, testStatus);
-    await updateCommentById(app, createdCommentId, accessToken, incorrectUpdateCommentData_08, testStatus);
-    await updateCommentById(app, createdCommentId, accessToken, incorrectUpdateCommentData_09, testStatus);
-    await updateCommentById(app, createdCommentId, accessToken, incorrectUpdateCommentData_10, testStatus);
+    const updateCommentByIdResponse_01: any = await updateCommentById(
+      app,
+      createdCommentId,
+      accessToken,
+      incorrectUpdateCommentData_01,
+      testStatus
+    );
+
+    const updateCommentByIdResponse_02: any = await updateCommentById(
+      app,
+      createdCommentId,
+      accessToken,
+      incorrectUpdateCommentData_02,
+      testStatus
+    );
+
+    const updateCommentByIdResponse_03: any = await updateCommentById(
+      app,
+      createdCommentId,
+      accessToken,
+      incorrectUpdateCommentData_03,
+      testStatus
+    );
+
+    const updateCommentByIdResponse_04: any = await updateCommentById(
+      app,
+      createdCommentId,
+      accessToken,
+      incorrectUpdateCommentData_04,
+      testStatus
+    );
+
+    const updateCommentByIdResponse_05: any = await updateCommentById(
+      app,
+      createdCommentId,
+      accessToken,
+      incorrectUpdateCommentData_05,
+      testStatus
+    );
+
+    const updateCommentByIdResponse_06: any = await updateCommentById(
+      app,
+      createdCommentId,
+      accessToken,
+      incorrectUpdateCommentData_06,
+      testStatus
+    );
+
+    const updateCommentByIdResponse_07: any = await updateCommentById(
+      app,
+      createdCommentId,
+      accessToken,
+      incorrectUpdateCommentData_07,
+      testStatus
+    );
+
+    const updateCommentByIdResponse_08: any = await updateCommentById(
+      app,
+      createdCommentId,
+      accessToken,
+      incorrectUpdateCommentData_08,
+      testStatus
+    );
+
+    const updateCommentByIdResponse_09: any = await updateCommentById(
+      app,
+      createdCommentId,
+      accessToken,
+      incorrectUpdateCommentData_09,
+      testStatus
+    );
+
+    const updateCommentByIdResponse_10: any = await updateCommentById(
+      app,
+      createdCommentId,
+      accessToken,
+      incorrectUpdateCommentData_10,
+      testStatus
+    );
+
     const getCommentByIdResponse: CommentOutputDTO = await getCommentById(app, createdCommentId);
 
     expect(getCommentByIdResponse).toEqual(createdComment);
+    expect(updateCommentByIdResponse_01.errorsMessages[0].field).toBe('content');
+    expect(updateCommentByIdResponse_01.errorsMessages[0].message).toBe('Field "content" is too short or too long');
+    expect(updateCommentByIdResponse_02.errorsMessages[0].field).toBe('content');
+    expect(updateCommentByIdResponse_02.errorsMessages[0].message).toBe('Field "content" is too short or too long');
+    expect(updateCommentByIdResponse_03.errorsMessages[0].field).toBe('content');
+    expect(updateCommentByIdResponse_03.errorsMessages[0].message).toBe('Field "content" is too short or too long');
+    expect(updateCommentByIdResponse_04.errorsMessages[0].field).toBe('content');
+    expect(updateCommentByIdResponse_04.errorsMessages[0].message).toBe('Field "content" is too short or too long');
+    expect(updateCommentByIdResponse_05.errorsMessages[0].field).toBe('content');
+    expect(updateCommentByIdResponse_05.errorsMessages[0].message).toBe('Field "content" is too short or too long');
+    expect(updateCommentByIdResponse_06.errorsMessages[0].field).toBe('content');
+    expect(updateCommentByIdResponse_06.errorsMessages[0].message).toBe('Field "content" must be a string');
+    expect(updateCommentByIdResponse_07.errorsMessages[0].field).toBe('content');
+    expect(updateCommentByIdResponse_07.errorsMessages[0].message).toBe('Field "content" must be a string');
+    expect(updateCommentByIdResponse_08.errorsMessages[0].field).toBe('content');
+    expect(updateCommentByIdResponse_08.errorsMessages[0].message).toBe('Field "content" must be a string');
+    expect(updateCommentByIdResponse_09.errorsMessages[0].field).toBe('content');
+    expect(updateCommentByIdResponse_09.errorsMessages[0].message).toBe('Field "content" must be a string');
+    expect(updateCommentByIdResponse_10.errorsMessages[0].field).toBe('content');
+    expect(updateCommentByIdResponse_10.errorsMessages[0].message).toBe('Field "content" must be a string');
   });
 
   it('❌ 005 should not delete a comment by ID without proper access token; DELETE /api/comments/:id', async () => {
@@ -202,11 +326,35 @@ describe('Comments API', () => {
     const createdCommentId: string = createdComment.id;
     const testStatus: HttpStatuses = HttpStatuses.BadRequest_400;
 
-    await deleteCommentById(app, incorrectCommentId_01, accessToken, testStatus);
-    await deleteCommentById(app, incorrectCommentId_02, accessToken, testStatus);
-    await deleteCommentById(app, incorrectCommentId_03, accessToken, testStatus);
+    const deleteCommentByIdResponse_01: any = await deleteCommentById(
+      app,
+      incorrectCommentId_01,
+      accessToken,
+      testStatus
+    );
+
+    const deleteCommentByIdResponse_02: any = await deleteCommentById(
+      app,
+      incorrectCommentId_02,
+      accessToken,
+      testStatus
+    );
+
+    const deleteCommentByIdResponse_03: any = await deleteCommentById(
+      app,
+      incorrectCommentId_03,
+      accessToken,
+      testStatus
+    );
+
     const getCommentByIdResponse: CommentOutputDTO = await getCommentById(app, createdCommentId);
 
     expect(getCommentByIdResponse).toEqual(createdComment);
+    expect(deleteCommentByIdResponse_01.errorsMessages[0].field).toBe('id');
+    expect(deleteCommentByIdResponse_01.errorsMessages[0].message).toBe('Field "id" has incorrect format of ObjectId');
+    expect(deleteCommentByIdResponse_02.errorsMessages[0].field).toBe('id');
+    expect(deleteCommentByIdResponse_03.errorsMessages[0].message).toBe('Field "id" has incorrect format of ObjectId');
+    expect(deleteCommentByIdResponse_03.errorsMessages[0].field).toBe('id');
+    expect(deleteCommentByIdResponse_03.errorsMessages[0].message).toBe('Field "id" has incorrect format of ObjectId');
   });
 });

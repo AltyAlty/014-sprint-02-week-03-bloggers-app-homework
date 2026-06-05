@@ -72,7 +72,10 @@ export const authService = {
   },
 
   /*Метод "registerUser()" для регистрации пользователя.*/
-  async registerUser(dto: CreateUserInputDTO): Promise<Result<{ createdUserId: string }>> {
+  async registerUser(
+    dto: CreateUserInputDTO,
+    emailAdapter = nodemailerAdapter
+  ): Promise<Result<{ createdUserId: string }>> {
     /*Создаем объект с данными о подтверждении email.*/
     const newUserEmailConfirmationData: EmailConfirmationType = {
       isConfirmed: false,
@@ -86,7 +89,7 @@ export const authService = {
     const createdUserId: string = createUserResult.data.userId;
 
     /*Просим адаптер "nodemailerAdapter" отправить письмо о подтверждении почты пользователю.*/
-    await nodemailerAdapter
+    await emailAdapter
       .sendMail(
         dto.email,
         'Complete Registration',
@@ -104,7 +107,7 @@ export const authService = {
   },
 
   /*Метод "resendConfirmationEmail()" для повторной отправки письма для подтверждения регистрация пользователя.*/
-  async resendConfirmationEmail(email: string): Promise<Result<{} | null>> {
+  async resendConfirmationEmail(email: string, emailAdapter = nodemailerAdapter): Promise<Result<{} | null>> {
     /*Создаем объект с данными о подтверждении email.*/
     const newUserEmailConfirmationData: EmailConfirmationType = {
       isConfirmed: false,
@@ -123,10 +126,10 @@ export const authService = {
     if (updateUserResult.status !== ResultStatuses.NoContent) return updateUserResult;
 
     /*Просим адаптер "nodemailerAdapter" повторно отправить письмо о подтверждении почты пользователю.*/
-    await nodemailerAdapter
+    await emailAdapter
       .sendMail(
         email,
-        'Complete Registration',
+        'Resending Complete Registration Mail',
         newUserEmailConfirmationData.confirmationCode,
         emailExamples.completeRegistrationEmail
       )

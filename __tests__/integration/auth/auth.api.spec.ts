@@ -3,7 +3,7 @@ import { createUser } from '../../utils/users/create-user';
 import { jwtAdapter } from '../../../src/auth/adapters/jwt.adapter';
 import { getCreateUserInputDTO } from '../../utils/users/get-create-user-input-dto';
 import { loginUser } from '../../utils/auth/login-user';
-import { doBeforeTests } from '../../utils/common/do-before-tests';
+import { doBeforeTests, doBeforeTestsWithMongoMemoryServer } from '../../utils/common/do-before-tests';
 import { CreateUserInputDTO } from '../../../src/users/routes/input-dto/create-user.input-dto';
 import { LoginDataInputDTO } from '../../../src/auth/routes/input-dto/login-data.input-dto';
 import { UserOutputDTO } from '../../../src/users/routes/output-dto/user.output-dto';
@@ -11,7 +11,8 @@ import { getAuthDataByAccessToken } from '../../utils/auth/get-auth-data-by-acce
 import { MeOutputDTO } from '../../../src/auth/routes/output-dto/me.output-dto';
 
 describe('Auth API', () => {
-  const app = doBeforeTests();
+  // const app = doBeforeTests();
+  const app = doBeforeTestsWithMongoMemoryServer();
 
   it('✅ 001 should authenticate a user when correct body passed; POST /api/auth/login', async () => {
     const createUserData: CreateUserInputDTO = getCreateUserInputDTO();

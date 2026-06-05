@@ -11,7 +11,7 @@ export const updateCommentById = async (
   accessToken: string | any,
   commentDTO?: UpdateCommentInputDTO | any,
   expectedStatus?: HttpStatuses
-): Promise<void> => {
+): Promise<any> => {
   const testUpdateCommentData: UpdateCommentInputDTO = { ...getUpdateCommentInputDTO(), ...commentDTO };
   const testStatus = expectedStatus ?? HttpStatuses.NoContent_204;
 
