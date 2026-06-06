@@ -1,10 +1,10 @@
 import { Filter, ObjectId } from 'mongodb';
-import { UserType } from '../types/user.type';
+import { UserType } from '../application/types/user.type';
 import { db } from '../../db/mongodb/mongo.db';
 import { GetUsersListQueryInputDTO } from '../routes/input-dto/get-users-list-query.input-dto';
 import { SortDirection } from '../../core/types/pagination/sort-direction';
 import { UserSortFieldInputDTO } from '../routes/input-dto/user-sort-field.input-dto';
-import { UserDBType } from '../../db/types/user-db.type';
+import { UserDBType } from './types/user-db.type';
 
 /*Query-репозиторий "usersQueryRepository" для работы с пользователями в БД.*/
 export const usersQueryRepository = {

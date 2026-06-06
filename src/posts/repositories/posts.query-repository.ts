@@ -1,10 +1,10 @@
 import { Filter, ObjectId } from 'mongodb';
-import { PostType } from '../types/post.type';
+import { PostType } from '../application/types/post.type';
 import { db } from '../../db/mongodb/mongo.db';
 import { GetPostsListQueryInputDTO } from '../routes/input-dto/get-posts-list-query.input-dto';
 import { SortDirection } from '../../core/types/pagination/sort-direction';
 import { PostSortFieldInputDTO } from '../routes/input-dto/post-sort-field.input-dto';
-import { PostDBType } from '../../db/types/post-db.type';
+import { PostDBType } from './types/post-db.type';
 
 /*Query-репозиторий "postsQueryRepository" для работы с постами в БД.*/
 export const postsQueryRepository = {

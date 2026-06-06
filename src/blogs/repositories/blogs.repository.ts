@@ -1,8 +1,8 @@
 import { DeleteResult, InsertOneResult, ObjectId, UpdateResult } from 'mongodb';
 import { db } from '../../db/mongodb/mongo.db';
-import { BlogType } from '../types/blog.type';
+import { BlogType } from '../application/types/blog.type';
 import { UpdateBlogInputDTO } from '../routes/input-dto/update-blog.input-dto';
-import { BlogDBType } from '../../db/types/blog-db.type';
+import { BlogDBType } from './types/blog-db.type';
 
 /*Репозиторий "blogsRepository" для работы с блогами в БД.*/
 export const blogsRepository = {

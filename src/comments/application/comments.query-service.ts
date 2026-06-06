@@ -8,7 +8,7 @@ import { PaginatedCommentsListOutputDTO } from '../routes/output-dto/paginated-c
 import { mapToPaginatedCommentsListOutputDTO } from '../repositories/mappers/map-to-paginated-comments-list-output-dto.util';
 import { PostOutputDTO } from '../../posts/routes/output-dto/post.output-dto';
 import { postsQueryService } from '../../posts/application/posts.query-service';
-import { CommentDBType } from '../../db/types/comment-db.type';
+import { CommentDBType } from '../repositories/types/comment-db.type';
 
 /*Query-сервис "commentsQueryService" для работы с комментариями.*/
 export const commentsQueryService = {

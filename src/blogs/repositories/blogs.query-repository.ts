@@ -1,10 +1,10 @@
 import { GetBlogsListQueryInputDTO } from '../routes/input-dto/get-blogs-list-query.input-dto';
 import { Filter, ObjectId } from 'mongodb';
-import { BlogType } from '../types/blog.type';
+import { BlogType } from '../application/types/blog.type';
 import { db } from '../../db/mongodb/mongo.db';
 import { BlogSortFieldInputDTO } from '../routes/input-dto/blog-sort-field.input-dto';
 import { SortDirection } from '../../core/types/pagination/sort-direction';
-import { BlogDBType } from '../../db/types/blog-db.type';
+import { BlogDBType } from './types/blog-db.type';
 
 /*Query-репозиторий "blogsQueryRepository" для работы с блогами в БД.*/
 export const blogsQueryRepository = {

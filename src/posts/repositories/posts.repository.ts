@@ -1,8 +1,8 @@
 import { db } from '../../db/mongodb/mongo.db';
-import { PostType } from '../types/post.type';
+import { PostType } from '../application/types/post.type';
 import { DeleteResult, InsertOneResult, ObjectId, UpdateResult } from 'mongodb';
 import { UpdatePostInputDTO } from '../routes/input-dto/update-post.input-dto';
-import { PostDBType } from '../../db/types/post-db.type';
+import { PostDBType } from './types/post-db.type';
 
 /*Репозиторий "postsRepository" для работы с постами в БД.*/
 export const postsRepository = {

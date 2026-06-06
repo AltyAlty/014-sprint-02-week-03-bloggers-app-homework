@@ -1,6 +1,6 @@
 import { PaginatedCommentsListOutputDTO } from '../../routes/output-dto/paginated-comments-list.output-dto';
 import { CommentOutputDTO } from '../../routes/output-dto/comment.output-dto';
-import { CommentDBType } from '../../../db/types/comment-db.type';
+import { CommentDBType } from '../types/comment-db.type';
 
 /*Функция "mapToPaginatedCommentsListOutputDTO()" преобразовывает комментарии из БД в подготовленные для пагинации
 комментарии.*/

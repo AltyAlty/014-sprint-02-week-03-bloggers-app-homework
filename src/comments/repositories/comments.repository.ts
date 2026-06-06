@@ -1,8 +1,8 @@
 import { UpdateCommentInputDTO } from '../routes/input-dto/update-comment.input-dto';
 import { db } from '../../db/mongodb/mongo.db';
 import { DeleteResult, InsertOneResult, ObjectId, UpdateResult } from 'mongodb';
-import { CommentType } from '../types/comment.type';
-import { CommentDBType } from '../../db/types/comment-db.type';
+import { CommentType } from '../application/types/comment.type';
+import { CommentDBType } from './types/comment-db.type';
 
 /*Репозиторий "commentsRepository" для работы с комментариями в БД.*/
 export const commentsRepository = {

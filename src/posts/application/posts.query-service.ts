@@ -8,7 +8,7 @@ import { ResultStatuses } from '../../core/types/result/result-statuses';
 import { Result } from '../../core/types/result/result.type';
 import { blogsQueryService } from '../../blogs/application/blogs.query-service';
 import { BlogOutputDTO } from '../../blogs/routes/output-dto/blog.output-dto';
-import { PostDBType } from '../../db/types/post-db.type';
+import { PostDBType } from '../repositories/types/post-db.type';
 
 /*Query-сервис "postsQueryService" для работы с постами.*/
 export const postsQueryService = {

@@ -1,5 +1,5 @@
 import { postsRepository } from '../repositories/posts.repository';
-import { PostType } from '../types/post.type';
+import { PostType } from './types/post.type';
 import { CreatePostInputDTO } from '../routes/input-dto/create-post.input-dto';
 import { UpdatePostInputDTO } from '../routes/input-dto/update-post.input-dto';
 import { ResultStatuses } from '../../core/types/result/result-statuses';
@@ -9,7 +9,7 @@ import { blogsService } from '../../blogs/application/blogs.service';
 import { BlogOutputDTO } from '../../blogs/routes/output-dto/blog.output-dto';
 import { PostOutputDTO } from '../routes/output-dto/post.output-dto';
 import { mapToPostOutputDTO } from '../repositories/mappers/map-to-post-output-dto.util';
-import { PostDBType } from '../../db/types/post-db.type';
+import { PostDBType } from '../repositories/types/post-db.type';
 
 /*Сервис "postsService" для работы с постами.*/
 export const postsService = {

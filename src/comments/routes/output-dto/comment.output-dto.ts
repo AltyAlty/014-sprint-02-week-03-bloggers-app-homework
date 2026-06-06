@@ -1,4 +1,4 @@
-import { CommentatorInfoType } from '../../types/comment.type';
+import { CommentatorInfoType } from '../../application/types/comment.type';
 
 /*Output DTO для комментария.*/
 export type CommentOutputDTO = {

@@ -6,7 +6,7 @@ import { mapToUserOutputDTO } from '../repositories/mappers/map-to-user-output-d
 import { UserOutputDTO } from '../routes/output-dto/user.output-dto';
 import { Result } from '../../core/types/result/result.type';
 import { ResultStatuses } from '../../core/types/result/result-statuses';
-import { UserDBType } from '../../db/types/user-db.type';
+import { UserDBType } from '../repositories/types/user-db.type';
 
 /*Query-сервис "usersQueryService" для работы с пользователями.*/
 export const usersQueryService = {

@@ -10,7 +10,7 @@ import { getUsersList } from '../../utils/users/get-users-list';
 import { emailExamples } from '../../../src/auth/email/email-examples';
 import { usersService } from '../../../src/users/application/users.service';
 import { usersRepository } from '../../../src/users/repositories/users.repository';
-import { UserDBType } from '../../../src/db/types/user-db.type';
+import { UserDBType } from '../../../src/users/repositories/types/user-db.type';
 import { confirmUserByCode } from '../../utils/auth/confirm-user-by-code';
 import { Result } from '../../../src/core/types/result/result.type';
 

@@ -1,6 +1,6 @@
 import { body } from 'express-validator';
 import { usersRepository } from '../repositories/users.repository';
-import { UserDBType } from '../../db/types/user-db.type';
+import { UserDBType } from '../repositories/types/user-db.type';
 
 /*Middleware "loginValidation" проверяет, что поле "login":
 1. Является строкой.

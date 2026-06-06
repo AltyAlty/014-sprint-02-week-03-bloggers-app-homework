@@ -1,6 +1,6 @@
 import { PaginatedBlogsListOutputDTO } from '../../routes/output-dto/paginated-blogs-list.output-dto';
 import { BlogOutputDTO } from '../../routes/output-dto/blog.output-dto';
-import { BlogDBType } from '../../../db/types/blog-db.type';
+import { BlogDBType } from '../types/blog-db.type';
 
 /*Функция "mapToPaginatedBlogsListOutputDTO()" преобразовывает блоги из БД в подготовленные для пагинации блоги.*/
 export const mapToPaginatedBlogsListOutputDTO = (

@@ -1,5 +1,5 @@
 import { BlogOutputDTO } from '../../routes/output-dto/blog.output-dto';
-import { BlogDBType } from '../../../db/types/blog-db.type';
+import { BlogDBType } from '../types/blog-db.type';
 
 /*Функция "mapToBlogOutputDTO()" преобразовывает блог из БД в подготовленный для отправки клиенту блог.*/
 export const mapToBlogOutputDTO = (blog: BlogDBType): BlogOutputDTO => {

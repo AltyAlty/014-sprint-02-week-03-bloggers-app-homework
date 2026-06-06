@@ -6,7 +6,7 @@ import { mapToBlogOutputDTO } from '../repositories/mappers/map-to-blog-output-d
 import { BlogOutputDTO } from '../routes/output-dto/blog.output-dto';
 import { ResultStatuses } from '../../core/types/result/result-statuses';
 import { Result } from '../../core/types/result/result.type';
-import { BlogDBType } from '../../db/types/blog-db.type';
+import { BlogDBType } from '../repositories/types/blog-db.type';
 
 /*Query-сервис "blogsQueryService" для работы с блогами.*/
 export const blogsQueryService = {

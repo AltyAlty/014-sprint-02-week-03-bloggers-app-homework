@@ -1,4 +1,4 @@
-import { EmailConfirmationType, UserType } from '../types/user.type';
+import { EmailConfirmationType, UserType } from './types/user.type';
 import { usersRepository } from '../repositories/users.repository';
 import { CreateUserInputDTO } from '../routes/input-dto/create-user.input-dto';
 import { argon2Adapter } from '../../auth/adapters/argon2.adapter';
@@ -7,7 +7,7 @@ import { Result } from '../../core/types/result/result.type';
 import { UserOutputDTO } from '../routes/output-dto/user.output-dto';
 import { mapToUserOutputDTO } from '../repositories/mappers/map-to-user-output-dto.util';
 import { commentsService } from '../../comments/application/comments.service';
-import { UserDBType } from '../../db/types/user-db.type';
+import { UserDBType } from '../repositories/types/user-db.type';
 
 /*Сервис "usersService" для работы с пользователями.*/
 export const usersService = {

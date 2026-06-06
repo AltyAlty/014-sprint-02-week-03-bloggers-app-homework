@@ -1,5 +1,5 @@
 import { blogsRepository } from '../repositories/blogs.repository';
-import { BlogType } from '../types/blog.type';
+import { BlogType } from './types/blog.type';
 import { CreateBlogInputDTO } from '../routes/input-dto/create-blog.input-dto';
 import { UpdateBlogInputDTO } from '../routes/input-dto/update-blog.input-dto';
 import { postsService } from '../../posts/application/posts.service';
@@ -7,7 +7,7 @@ import { ResultStatuses } from '../../core/types/result/result-statuses';
 import { Result } from '../../core/types/result/result.type';
 import { BlogOutputDTO } from '../routes/output-dto/blog.output-dto';
 import { mapToBlogOutputDTO } from '../repositories/mappers/map-to-blog-output-dto.util';
-import { BlogDBType } from '../../db/types/blog-db.type';
+import { BlogDBType } from '../repositories/types/blog-db.type';
 
 /*Сервис "blogsService" для работы с блогами.*/
 export const blogsService = {

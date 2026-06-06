@@ -3,12 +3,12 @@ import { Result } from '../../core/types/result/result.type';
 import { commentsRepository } from '../repositories/comments.repository';
 import { ResultStatuses } from '../../core/types/result/result-statuses';
 import { CreateCommentInPostInputDTO } from '../routes/input-dto/create-comment-in-post.input-dto';
-import { CommentType } from '../types/comment.type';
+import { CommentType } from './types/comment.type';
 import { usersService } from '../../users/application/users.service';
 import { UserOutputDTO } from '../../users/routes/output-dto/user.output-dto';
 import { postsService } from '../../posts/application/posts.service';
 import { PostOutputDTO } from '../../posts/routes/output-dto/post.output-dto';
-import { CommentDBType } from '../../db/types/comment-db.type';
+import { CommentDBType } from '../repositories/types/comment-db.type';
 
 /*Сервис "commentsService" для работы с комментариями.*/
 export const commentsService = {

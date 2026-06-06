@@ -1,9 +1,9 @@
 import { Collection, Db, MongoClient } from 'mongodb';
 import { SETTINGS } from '../../core/settings/settings';
-import { BlogType } from '../../blogs/types/blog.type';
-import { PostType } from '../../posts/types/post.type';
-import { UserType } from '../../users/types/user.type';
-import { CommentType } from '../../comments/types/comment.type';
+import { BlogType } from '../../blogs/application/types/blog.type';
+import { PostType } from '../../posts/application/types/post.type';
+import { UserType } from '../../users/application/types/user.type';
+import { CommentType } from '../../comments/application/types/comment.type';
 
 /*Объект для работы с MongoDB.*/
 export const db = {

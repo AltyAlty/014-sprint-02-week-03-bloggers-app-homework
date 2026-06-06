@@ -1,10 +1,10 @@
 import { Filter, ObjectId } from 'mongodb';
-import { CommentType } from '../types/comment.type';
+import { CommentType } from '../application/types/comment.type';
 import { db } from '../../db/mongodb/mongo.db';
 import { GetCommentsListInPostQueryInputDTO } from '../routes/input-dto/get-comments-list-in-post-query.input-dto';
 import { SortDirection } from '../../core/types/pagination/sort-direction';
 import { CommentSortFieldInputDTO } from '../routes/input-dto/comment-sort-field.input-dto';
-import { CommentDBType } from '../../db/types/comment-db.type';
+import { CommentDBType } from './types/comment-db.type';
 
 /*Query-репозиторий "commentsQueryRepository" для работы с комментариями в БД.*/
 export const commentsQueryRepository = {

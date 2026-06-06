@@ -1,5 +1,5 @@
 import { UserOutputDTO } from '../../routes/output-dto/user.output-dto';
-import { UserDBType } from '../../../db/types/user-db.type';
+import { UserDBType } from '../types/user-db.type';
 
 /*Функция "mapToUserOutputDTO()" преобразовывает пользователя из БД в подготовленного для отправки клиенту
 пользователя.*/

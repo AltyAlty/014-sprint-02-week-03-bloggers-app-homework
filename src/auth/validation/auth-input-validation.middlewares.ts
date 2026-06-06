@@ -1,6 +1,6 @@
 import { body } from 'express-validator';
 import { usersRepository } from '../../users/repositories/users.repository';
-import { UserDBType } from '../../db/types/user-db.type';
+import { UserDBType } from '../../users/repositories/types/user-db.type';
 
 /*Middleware "loginOrEmail" проверяет, что поле "login" является строкой.*/
 const loginOrEmailValidation = body('loginOrEmail')

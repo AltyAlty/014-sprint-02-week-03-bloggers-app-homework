@@ -11,10 +11,10 @@ import { UserOutputDTO } from '../../../src/users/routes/output-dto/user.output-
 import { createUser } from '../../utils/users/create-user';
 import { usersService } from '../../../src/users/application/users.service';
 import { Result } from '../../../src/core/types/result/result.type';
-import { UserDBType } from '../../../src/db/types/user-db.type';
+import { UserDBType } from '../../../src/users/repositories/types/user-db.type';
 import { usersRepository } from '../../../src/users/repositories/users.repository';
 import { confirmUserByCode } from '../../utils/auth/confirm-user-by-code';
-import { EmailConfirmationType } from '../../../src/users/types/user.type';
+import { EmailConfirmationType } from '../../../src/users/application/types/user.type';
 import { randomUUID } from 'crypto';
 import { add } from 'date-fns/add';
 import { resendConfirmationEmail } from '../../utils/auth/resend-confirmation-email';

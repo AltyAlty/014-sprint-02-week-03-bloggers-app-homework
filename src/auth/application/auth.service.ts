@@ -8,7 +8,7 @@ import { CreateUserInputDTO } from '../../users/routes/input-dto/create-user.inp
 import { nodemailerAdapter } from '../adapters/nodemailer.adapter';
 import { randomUUID } from 'crypto';
 import { emailExamples } from '../email/email-examples';
-import { EmailConfirmationType } from '../../users/types/user.type';
+import { EmailConfirmationType } from '../../users/application/types/user.type';
 import { add } from 'date-fns/add';
 import { SETTINGS } from '../../core/settings/settings';
 

@@ -1,7 +1,7 @@
 import { DeleteResult, InsertOneResult, ObjectId, UpdateResult } from 'mongodb';
 import { db } from '../../db/mongodb/mongo.db';
-import { EmailConfirmationType, UserType } from '../types/user.type';
-import { UserDBType } from '../../db/types/user-db.type';
+import { EmailConfirmationType, UserType } from '../application/types/user.type';
+import { UserDBType } from './types/user-db.type';
 
 /*Репозиторий "usersRepository" для работы с пользователями в БД.*/
 export const usersRepository = {
